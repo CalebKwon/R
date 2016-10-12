@@ -1,0 +1,304 @@
+install.packages("ggplot2")
+
+#######################################################################################
+data(mpg)
+names(mpg)
+
+# displ - a car’s engine size in litres, and
+# hwy - a car’s fuel efficiency on the highway in miles per gallon (mpg). 
+#  A car with a low fuel efficiency consumes more fuel than a car with a high fuel efficiency when they travel the same distance.
+
+# The plot shows a negative relationship between engine size (displ) and fuel efficiency (hwy).
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy))
+
+# class variable to reveal the class of each car.
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, color = class))
+
+#class to the size aesthetic in the same way.
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, size = class))
+  
+#  alpha aesthetic, which controls the transparency of the points
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, alpha = class))
+
+# class to the shape of the points.
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, shape = class))
+  
+# points in our plot blue.
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy), color = "blue")
+  
+# 
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy))
+
+# 
+ggplot(data = mpg) + 
+  geom_smooth(mapping = aes(x = displ, y = hwy))
+
+#
+ggplot(data = mpg) + 
+  geom_smooth(mapping = aes(x = displ, y = hwy, linetype = drv))
+
+#
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) +
+  geom_smooth(mapping= aes(x = displ, y = hwy))
+
+# 
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+  geom_point(mapping = aes(color = class)) + 
+  geom_smooth()
+
+# 
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+  geom_point() + 
+  geom_smooth(data = subset(mpg, cyl == 8))
+
+# solving overlapping issue, jitter
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy), position = "jitter") + 
+  ggtitle('Position = "jitter"')
+ 
+# 	2.	Will these two graphs look different?
+
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+  geom_point() + 
+  geom_smooth()
+
+ggplot(mapping = aes(x = displ, y = hwy)) + 
+  geom_point(data = mpg) + 
+  geom_smooth(data = mpg)
+
+data(diamonds)
+diamonds
+
+#  information about 53,940 diamonds
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut))
+data
+diamonds[1:20,]
+
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, color = cut))
+
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, fill = cut))
+
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, fill = clarity))
+
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, fill = clarity), position = "identity") +
+  ggtitle('Position = "identity"')
+
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, fill = clarity), position = "fill") +
+  ggtitle('Position = "fill"')
+
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, fill = clarity), position = "dodge") +
+  ggtitle('Position = "dodge"')
+  
+#Polar bar charts will look better if you also set the width parameter of geom_bar() to 1
+# width parameter of geom_bar() to 1. This will ensure that no space appears between the bars.
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, fill = cut), width = 1) + 
+  coord_polar()
+
+#
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = factor(1), fill = cut), width = 1) + 
+  coord_polar(theta = "y")
+
+# 
+ggplot(data = diamonds) + 
+geom_bar(mapping = aes(x = cut, fill = cut), width = 1) + 
+coord_polar() + 
+facet_wrap( ~ clarity)
+
+# 
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) +
+  facet_wrap(~ class)
+
+#
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) +
+  facet_grid(drv ~ .)
+
+#
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) +
+ # facet_grid(cyl ~ .)
+   facet_grid(. ~ cyl)
+
+# histogram
+# http://tutorials.iq.harvard.edu/R/Rgraphics/Rgraphics.html
+# http://r4ds.had.co.nz/data-visualisation.html
+
+# http://had.co.nz/ggplot2
+
+# qplot examples -------------------------------------------------------------
+
+qplot(diamonds$cut, diamonds$carat)
+qplot(carat, price, data = diamonds)
+qplot(carat, price, data = diamonds, colour=clarity)
+qplot(carat, price, data = diamonds, geom=c("point", "smooth"), method=lm)
+
+qplot(carat, data = diamonds, geom="histogram")
+qplot(carat, data = diamonds, geom="histogram", binwidth = 1)
+qplot(carat, data = diamonds, geom="histogram", binwidth = 0.1)
+qplot(carat, data = diamonds, geom="histogram", binwidth = 0.01)
+
+#
+ggplot(data = diamonds) +
+  geom_bar(mapping = aes(x = cut))
+
+# 
+ggplot(data = diamonds) +
+  geom_bar(mapping = aes(x = cut), width = 1)
+
+#
+table(diamonds$cut)
+
+# geom_histogram() will divide the range of the variable into 30 equal length bins.
+ggplot(data = diamonds) +
+  geom_histogram(aes(x = carat))
+
+# 
+ggplot(data = diamonds) +
+  geom_histogram(aes(x = carat), binwidth = 1)
+
+#
+ggplot(data = diamonds) +
+  geom_histogram(aes(x = carat), binwidth = 0.01)
+
+#	•	binwidth - the width to use for the bins in the same units as the x variable
+#	•	origin - origin of the first bin interval
+#	•	right - if TRUE bins will be right closed (e.g. points that fall on the border of two bins will be counted with the bin to the left)
+#	•	breaks - a vector of actual bin breaks to use. If you set the breaks argument, it will override the binwidth and origin arguments.
+
+#
+ggplot(data = diamonds) +
+  geom_freqpoly(aes(x = carat))
+
+ggplot(data = diamonds) +
+  geom_histogram(aes(x = carat))
+
+ggplot(data = diamonds) +
+  geom_freqpoly(aes(x = carat, color = cut))
+
+ggplot(data = diamonds) +
+  geom_histogram(aes(x = carat, fill = cut))
+
+ggplot(data = diamonds) +
+  geom_area(aes(x = carat, fill = cut), stat = "bin", position = "stack")
+
+ggplot(data = diamonds) +
+  geom_density(aes(x = carat))
+
+# You can control the smoothness of the density with adjust, and 
+# you can select the kernel to use to estimate the density with kernel
+ggplot(data = diamonds) +
+  geom_density(aes(x = carat, color = cut), kernel = "gaussian", adjust = 4)
+
+
+# using ggplot() -------------------------------------------------------------
+d <- ggplot(diamonds, aes(x=carat, y=price))
+d + geom_point()
+d + geom_point(aes(colour = carat))
+d + geom_point(aes(colour = carat)) + scale_colour_brewer()
+
+ggplot(diamonds) + geom_histogram(aes(x=price))
+
+# Separation of statistcs and geometric elements -----------------------------
+
+p <- ggplot(diamonds, aes(x=price))
+
+p + geom_histogram()
+p + stat_bin(geom="area")
+p + stat_bin(geom="point")
+p + stat_bin(geom="line")
+
+p + geom_histogram(aes(fill = clarity))
+p + geom_histogram(aes(y = ..density..))
+
+#########################################################################
+# http://zevross.com/blog/2014/08/04/beautiful-plotting-in-r-a-ggplot2-cheatsheet-3/
+library(ggplot2)
+nmmaps<-read.csv("~/Dropbox/Statlecture/lecture/Data/chicago-nmmaps.csv", as.is=T)
+# string to date format
+# ex) strDates <- c("01/05/1965", "08/16/1975")
+# dates <- as.Date(strDates, "%m/%d/%Y")
+
+nmmaps$date<-as.Date(nmmaps$date,"%m/%d/%y")
+nmmaps<-nmmaps[nmmaps$date>as.Date("1996-12-31"),]
+nmmaps$year<-substring(nmmaps$date,1,4)
+head(nmmaps)
+
+
+##########################################################################
+data(mtcars)
+mtcars
+
+
+data(mtcars)
+
+# ggplot2 examples
+library(ggplot2) 
+
+# create factors with value labels 
+mtcars$gear <- factor(mtcars$gear,levels=c(3,4,5),
+  	labels=c("3gears","4gears","5gears")) 
+mtcars$am <- factor(mtcars$am,levels=c(0,1),
+  	labels=c("Automatic","Manual")) 
+mtcars$cyl <- factor(mtcars$cyl,levels=c(4,6,8),
+   labels=c("4cyl","6cyl","8cyl")) 
+
+# Kernel density plots for mpg
+# grouped by number of gears (indicated by color)
+qplot(mpg, data=mtcars, geom="density", fill=gear, alpha=I(.5), 
+   main="Distribution of Gas Milage", xlab="Miles Per Gallon", 
+   ylab="Density")
+
+# Scatterplot of mpg vs. hp for each combination of gears and cylinders
+# in each facet, transmittion type is represented by shape and color
+qplot(hp, mpg, data=mtcars, shape=am, color=am, 
+   facets=gear~cyl, size=I(3),
+   xlab="Horsepower", ylab="Miles per Gallon") 
+
+# Separate regressions of mpg on weight for each number of cylinders
+qplot(wt, mpg, data=mtcars, geom=c("point", "smooth"), 
+   method="lm", formula=y~x, color=cyl, 
+   main="Regression of MPG on Weight", 
+   xlab="Weight", ylab="Miles per Gallon")
+
+# Boxplots of mpg by number of gears 
+# observations (points) are overlayed and jittered
+qplot(gear, mpg, data=mtcars, geom=c("boxplot", "jitter"), 
+   fill=gear, main="Mileage by Gear Number",
+   xlab="", ylab="Miles per Gallon")
+
+
+###########################################################################
+#########################practice with real data ##########################
+###########################################################################
+# http://tutorials.iq.harvard.edu/R/Rgraphics/Rgraphics.html
+# Data from https://www.lincolninst.edu/subcenters/land-values/land-prices-by-state.asp
+# 분기별로 계속 업데잇 됨
+
+housing<-read.csv("~/Dropbox/Statlecture/lecture/Data/landdata-states-2016q1.csv") # 자신의 환경에 맞게 설정 
+dim(housing)
+str(housing)
+
+housing$Year <- as.numeric(substr(housing$Date, 1, 4))
+housing$Qrtr <- as.numeric(substr(housing$Date, 5, 5))
+housing$Date <- housing$Year + housing$Qrtr/4
+head(housing[1:5])
+
+
