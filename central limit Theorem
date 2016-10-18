@@ -1,0 +1,16 @@
+# central limit Theorem 
+#### 어떤 모집단의 평균값을 알고 싶다. 
+# http://msemac.redwoods.edu/~darnold/math15/UsingRInStatistics/CentralLimit.php
+x=rnorm(10000,mean=100,sd=10)
+hist(x,prob=TRUE)
+x=rnorm(500,mean=100,sd=10)
+hist(x,prob=TRUE,ylim=c(0,0.04))
+curve(dnorm(x,mean=100,sd=10),70,130,add=TRUE,lwd=2,col="red")
+
+############## distribution of mean##############
+mu=100; sigma=10
+n=5
+
+xbar=rep(0,500)
+for (i in 1:500) { xbar[i]=mean(rnorm(n,mean=mu,sd=sigma)) }
+hist(xbar,prob=TRUE,breaks=12,xlim=c(70,130),ylim=c(0,0.1))
