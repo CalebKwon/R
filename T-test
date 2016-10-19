@@ -1,0 +1,115 @@
+# The t Test With Two Independent Groups
+# marijuana smoking and a deficit in performance on a task measuring short term memory
+nonsmokers = c(18,22,21,17,20,17,23,20,22,21)
+smokers = c(16,20,14,21,20,18,13,15,17,21)
+
+
+par(mfrow=c(1,2))               # set graphics window to plot side by side
+plot(density(nonsmokers), main="nonsmokers")
+plot(density(smokers), main="smokers")
+
+boxplot(nonsmokers, smokers, ylab="Scores on Digit Span Task",      # plot and label y-axis
+         names=c("nonsmokers","smokers"),                           # group names on x-axis
+         main="Digit Span Performance by\n Smoking Status")         # main title
+
+mean(nonsmokers)
+sd(nonsmokers)
+
+mean(smokers)
+sd(smokers)
+
+# T-test
+t.test(nonsmokers, smokers)
+# By default the two-tailed test is done.
+
+# different data format
+scores = c(nonsmokers, smokers)
+groups = c("nonsmokers","smokers")        # Make sure these are in the right order!
+groups = rep(groups, times=c(10,10))      # 10 nonsmokers, 10 smokers
+mj.data = data.frame(groups, scores)
+mj.data
+
+t.test(scores ~ groups)
+
+# If the normality assumption of the t-test is violated, and the sample sizes are two small to heal,
+# then a nonparametric alternative test should be sought.
+
+# 
+wilcox.test(nonsmokers, smokers)
+
+#
+wilcox.test(scores ~ groups, data=mj.data)
+
+# t.test(x, y = NULL,
+#       alternative = c("two.sided", "less", "greater"),
+#       mu = 0, paired = FALSE, var.equal = FALSE,           
+#       conf.level = 0.95, ...)
+# 
+# var.equal : 등분산 가정 여부를 설정한다. 만약 TRUE 라면 합동분산(pooled variance)을 사용하며, 그렇지 않은 경우에는 Welch 또는 Satterthwaite을 사용한다.
+# paired : 
+# Paired sample t-test is a statistical technique that is used to compare two population means 
+# in the case of two samples that are correlated.  Paired sample t-test is used in ‘before-after’ studies, 
+# or when the samples are the matched pairs, or when it is a case-control study. 
+# A paired t-test can be more powerful than a 2-sample t-test because 
+# the latter includes additional variation occurring from the independence of the observations.
+# A paired t-test is not subject to this variation because the paired observations are dependent. 
+# Also, a paired t-test does not require both samples to have equal variance. 
+
+
+
+# before and after training for each athlete.
+# Before training: 12.9, 13.5, 12.8, 15.6, 17.2, 19.2, 12.6, 15.3, 14.4, 11.3
+# After training: 12.7, 13.6, 12.0, 15.2, 16.8, 20.0, 12.0, 15.9, 16.0, 11.1
+
+a = c(12.9, 13.5, 12.8, 15.6, 17.2, 19.2, 12.6, 15.3, 14.4, 11.3)
+b = c(12.7, 13.6, 12.0, 15.2, 16.8, 20.0, 12.0, 15.9, 16.0, 11.1)
+
+
+# if the means of times have remained substantially the same (hypothesis H0)
+# In this case we have two sets of paired samples, since the measurements were made on the same athletes before and after the workout
+t.test(a,b, paired=TRUE)   # 다르다. 향상, 퇴보 둘 다 OK
+
+# The p-value is greater than 0.05, then we can accept the hypothesis H0 of equality of the averages.
+
+
+# New training 
+a = c(12.9, 13.5, 12.8, 15.6, 17.2, 19.2, 12.6, 15.3, 14.4, 11.3)
+b = c(12.0, 12.2, 11.2, 13.0, 15.0, 15.8, 12.2, 13.4, 12.9, 11.0)
+
+
+# Now we check if there was actually an improvement, ie perform a t-test for paired data, 
+# specifying in R to test the alternative hypothesis H1 of improvement in times. 
+# To do this simply add the syntax alt = "less" when you call the t-test:
+# 줄어 들었냐?
+
+# a가 b보다 작은가? 
+t.test(a,b, paired=TRUE, alt="less") 
+
+# a가 b보다 큰가? 
+t.test (a, b, paired = TRUE, alt = "greater")
+
+# One Sample t-test
+data = c(52.7, 53.9, 41.7, 71.5, 47.6, 55.1,
+       62.2, 56.5, 33.4, 61.8, 54.3, 50.0, 
+       45.3, 63.4, 53.9, 65.5, 66.6, 70.0,
+       52.4, 38.6, 46.1, 44.4, 60.7, 56.4)
+t.test(data, mu=50, alternative = 'greater')
+
+
+# 다양한 T-test 방법 정리 
+# independent 2-group t-test
+# t.test(y~x) # where y is numeric and x is a binary factor
+
+# independent 2-group t-test
+t.test(y1,y2) # where y1 and y2 are numeric
+
+# paired t-test
+t.test(y1,y2,paired=TRUE) # where y1 & y2 are numeric
+
+# one sample t-test
+t.test(y,mu=3) # Ho: mu=3
+
+
+# practice
+hsb2 <- read.table('http://www.ats.ucla.edu/stat/r/modules/hsb2.csv', header=T, sep=",")
+# 각 점수에 대해 남녀 성적 차이
