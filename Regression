@@ -1,0 +1,123 @@
+# simple Practice
+data(iris)
+setosa <- iris[1:50,1:4]
+head(setosa)
+names(setosa)<-c("sl","sw","pl","pw")
+head(setosa)
+
+rout <- lm(sl~sw,data=setosa) 
+summary(rout)
+
+plot(setosa$sw,setosa$sl,pch=16, xlab="sepal.width", ylab="sepal.length")
+abline(rout)
+
+
+# multiple regression
+# 모든 변들을 더해라
+
+
+##################################################
+################Linear Model######################
+##################################################
+
+# Pratice with data!
+# http://tutorials.iq.harvard.edu/R/Rstatistics/Rstatistics.html#orgheadline7
+# working directory설정하고 그 안의 데이터 사용하기
+
+getwd()
+setwd("/Users/byounggugkwon/Dropbox/Statlecture/24H")
+list.files("dataSets")
+
+states.data <- readRDS("dataSets/states.rds") 
+# read the states data
+states.data <- readRDS("dataSets/states.rds") 
+#get labels
+states.info <- data.frame(attributes(states.data)[c("names", "var.labels")])
+attach(states.data)
+#  [1] "state"   "region"  "pop"     "area"    "density" "metro"   "waste"   "energy"  "miles"   "toxic"   "green"   "house"   "senate" 
+# [14] "csat"    "vsat"    "msat"    "percent" "expense" "income"  "high"    "college"
+# Correlation Graph
+pairs(~csat+vsat+msat,data=states.data, main="Simple Scatterplot Matrix")
+
+library(car)
+scatterplotMatrix(~csat+vsat+msat|region, data=states.data,main="Scatterplot")
+
+# 3D Scatterplot
+library(scatterplot3d)
+scatterplot3d(csat+vsat+msat, main="3D Scatterplot",na.rm=T)
+length(csat)
+length(vsat)
+length(msat)
+
+
+#look at last few labels
+tail(states.info, 8)
+
+# summary of expense and csat columns, all rows
+sts.ex.sat <- subset(states.data, select = c("expense", "csat"))
+summary(sts.ex.sat)
+# correlation between expense and csat
+cor(sts.ex.sat)
+
+# scatter plot of expense vs csat
+plot(sts.ex.sat)
+
+# Fit our regression model
+sat.mod <- lm(csat ~ expense, # regression formula
+              data=states.data) # data set
+# Summarize and print the results
+summary(sat.mod) # show regression coefficients table
+
+summary(lm(csat ~ expense + percent, data = states.data))
+
+p<-lm(csat ~ percent, # regression formula
+              data=states.data) 
+# percent
+summary(p)
+
+confint(sat.mod)
+# hist(residuals(sat.mod))
+
+
+# 	Ordinary least squares regression relies on several assumptions, including that the residuals are normally distributed and homoscedastic, 
+# the errors are # independent and the relationships are linear.
+# Investigate these assumptions visually by plotting your model:
+
+par(mar = c(4, 4, 2, 2), mfrow = c(1, 2)) #optional
+plot(sat.mod, which = c(1, 2)) # "which" argument optional
+
+# fit another model, adding house and senate as predictors
+sat.voting.mod <-  lm(csat ~ expense + house + senate,
+                      data = na.omit(states.data))
+sat.mod <- update(sat.mod, data=na.omit(states.data))
+coef(summary(sat.voting.mod))
+
+#Add the interaction to the model
+sat.expense.by.percent <- lm(csat ~ expense*income,
+                             data=states.data) 
+#Show the results
+  coef(summary(sat.expense.by.percent)) # show regression coefficients table
+
+# practice using weather data
+setwd("~/Dropbox/Statlecture/40H")
+nmmaps<-read.csv("chicago-nmmaps.csv", as.is=T)
+head(nmmaps)
+library(ggplot2)
+nmmaps$date<-as.Date(nmmaps$date,format="%m/%d/%y")
+
+head(nmmaps)
+days(nmmaps[1,2])
+
+winter<-nmmaps[nmmaps$season=="winter",]
+winter[,9]
+names(winter)
+
+nmmaps<-nmmaps[nmmaps$date>as.Date("1996-12-31"),]
+nmmaps$year<-substring(nmmaps$date,1,4)
+head(nmmaps)
+
+
+# Practice with UScereal
+library(MASS)
+data(UScereal)
+# calori information이 빠졌다면 다른 데터를 가지고 예측 모델을 만들어 보라.
