@@ -1,0 +1,278 @@
+# csv 파일 불러오기 (file importing)
+secu_com_finance<- read.csv("~/Dropbox/Statlecture/24H/data/finance.csv",header = TRUE,stringsAsFactors = FALSE,fileEncoding="euc-kr")
+
+# V1 : 총자본순이익율
+# V2 : 자기자본순이익율
+# V3 : 자기자본비율
+# V4 : 부채비율
+# V5 : 자기자본회전율
+
+# 표준화 변환 (standardization)
+secu_com_finance<- transform(secu_com_finance, 
+                                    V1_s = scale(V1), 
+                                    V2_s = scale(V2), 
+                                    V3_s = scale(V3), 
+                                    V4_s = scale(V4),
+                                    V5_s = scale(V5))
+
+# V1.총자본순이익율, V2.자기자본순이익율, V3.자기자본비율, V5.자기자본회전율의 네 개의 변수는 숫자가 클 수록 좋다는 뜻이지만 V4.부채비율는 높을 수록 안 좋다고 해석하게 됩니다.  
+# 즉 V1, V2, V3, V5와 V4는 반대방향으로 움직이게 되는데요, 서로 같은 방향으로 움직이게 해서 상관도가 높게 나와 같은 주성분에 반영되도록 하기 위해서 아래와 같이 V4.
+# 부채비율의 방향을 변환
+
+# 부채비율(V4_s)을 방향(max(V4_s)-V4_s) 변환
+secu_com_finance<- transform(secu_com_finance, 
+                                    V4_s2 = max(V4_s) - V4_s)
+ 
+# variable selection
+secu_com_finance<- secu_com_finance_2007[,c("company", "V1_s", "V2_s", "V3_s", "V4_s2", "V5_s")]
+
+# Correlation analysis
+cor(secu_com_finance[,-1])
+
+round(cor(secu_com_finance[,-1]), digits=3) # 반올림
+
+# Scatter plot matrix
+plot(secu_com_finance[,-1])
+
+# 주성분분석 PCA(Principal Component Analysis)
+secu_prcomp <- prcomp(secu_com_finance[,c(2:6)]) # 첫번째 변수 회사명은 빼고 분석
+summary(secu_prcomp)
+
+# 
+print(secu_prcomp)
+
+# Scree Plot
+plot(prcomp(secu_com_finance[,c(2:6)]), type="l",sub = "Scree Plot")
+
+# Biplot
+biplot(prcomp(secu_com_finance[,c(2:6)]), cex = c(0.7, 0.8))
+ 
+# 관측치별 주성분1, 주성분2 점수 계산(PC1 score, PC2 score)
+secu_pc1 <- predict(secu_prcomp)[,1]
+secu_pc2 <- predict(secu_prcomp)[,2]
+ 
+# 관측치별 이름 매핑(rownames mapping)
+text(secu_pc1, secu_pc2, labels = secu_com_finance$company,cex = 0.7, pos = 3, col = "blue")
+
+# PCA 두번째 예제
+data(iris)
+iris
+iris$Species<-factor(iris$Species,levels=c("versicolor","Virginica","setosa"))
+str(iris)
+round(cor(iris[,1:4]),2)
+pc<-princomp(iris[,1:4],cor=TRUE,scores=TRUE)
+summary(pc)
+plot(pc,type="lines")
+
+biplot(pc,cex = c(0.7, 0.8))
+
+# 관측치별 주성분1, 주성분2 점수 계산(PC1 score, PC2 score)
+# iris_pc1 <- predict(pc)[,1]
+# iris_pc2 <- predict(pc)[,2]
+ 
+# 관측치별 이름 매핑(rownames mapping)
+# text(iris_pc1, iris_pc2, labels = iris$Species, cex = 0.7, pos = 3, col = "blue")
+
+# 세번째 예제
+# library(car)
+data(mtcar) 
+
+# library(MASS)
+data(UScereal)
+
+# http://factominer.free.fr/classical-methods/principal-components-analysis.html
+install.packages("FactoMineR")
+library(FactoMineR)
+data(decathlon)
+str(decathlon)
+
+res.pca = PCA(decathlon[,1:10], scale.unit=TRUE, ncp=5, graph=T)
+#decathlon: the data set used
+#scale.unit: to choose whether to scale the data or not 
+#ncp: number of dimensions kept in the result
+#graph: to choose whether to plot the graphs or not
+
+
+res.pca = PCA(decathlon[,1:12], scale.unit=TRUE, ncp=5, quanti.sup=c(11: 12), graph=T)
+#decathlon: the data set used
+#scale.unit: to choose whether to scale the datas or not
+#ncp: number of dimensions kept in the result
+#quanti.sup: vector of the indexes of the quantitative supplementary variables
+#graph: to choose whether to plot the graphs or not
+
+res.pca = PCA(decathlon, scale.unit=TRUE, ncp=5, quanti.sup=c(11: 12), quali.sup=13, graph=T)
+#decathlon: the data set used
+#scale.unit: to choose whether to scale the datas or not
+#ncp: number of dimensions kept in the result
+#quanti.sup: vector of the indexes of the quantitative supplementary variables
+#quali.sup: vector of the indexes of the qualitative supplementary variables
+#graph: to choose whether to plot the graphs or not
+
+plot.PCA(res.pca, axes=c(1, 2), choix="ind", habillage=13)
+#res.pca: the result of a PCA
+#axes: the axes to plot
+#choix: the graph to plot ("ind" for the individuals, "var" for the variables)
+#habillage: to choose the colours of the individuals: no colour ("none"), a colour for each individual ("ind") or to colour the individuals according to a categorical variable (give the number of the qualitative variable)
+
+
+# http://rpubs.com/sinhrks/plot_pca
+# {ggfortify} let {ggplot2} know how to interpret PCA objects. After loading {ggfortify}, 
+# you can use ggplot2::autoplot function forstats::prcomp and stats::princomp objects.
+install.packages('ggfortify')
+library(ggfortify)
+df <- iris[c(1, 2, 3, 4)]
+autoplot(prcomp(df))
+
+autoplot(prcomp(df), data = iris, colour = 'Species')
+
+# Label = TRUE draws each data label using rownames
+autoplot(prcomp(df), data = iris, colour = 'Species', label = TRUE, label.size = 3)
+
+# shape = FALSE makes plot without points. In this case, label is turned on unless otherwise specified.
+autoplot(prcomp(df), data = iris, colour = 'Species', shape = FALSE, label.size = 3)
+
+# loadings = TRUE draws eigenvectors.
+autoplot(prcomp(df), data = iris, colour = 'Species', loadings = TRUE)
+
+# You can attach eigenvector labels and change some options.
+autoplot(prcomp(df), data = iris, colour = 'Species',
+         loadings = TRUE, loadings.colour = 'blue',
+         loadings.label = TRUE, loadings.label.size = 3)
+
+# K-means clustering
+autoplot(kmeans(USArrests, 3), data = USArrests)
+
+# 
+autoplot(kmeans(USArrests, 3), data = USArrests, label = TRUE, label.size = 3)
+
+## clustering
+## It is based on some notion of "distance" (the inverse of similarity) between data points and use that to identify data points that are close-by to each other.
+## http://www.instantr.com/2013/02/12/performing-a-cluster-analysis-in-r/
+## http://horicky.blogspot.kr/2012/04/machine-learning-in-r-clustering.html
+
+##	1.	Place K points into the space represented by the objects that are being clustered. These points represent initial group centroids.
+##	2.	Assign each object to the group that has the closest centroid.
+##	3.	When all objects have been assigned, recalculate the positions of the K centroids.
+##	4.	Repeat Steps 2 and 3 until the centroids no longer move. This produces a separation of the objects into groups from which the metric to be minimized can be calculated.
+
+# https://rstudio-pubs-static.s3.amazonaws.com/33876_1d7794d9a86647ca90c4f182df93f0e8.html
+# install.packages('rattle')
+install.packages("rattle")
+data(wine, package='rattle')
+head(wine)
+wine[-1]
+
+wine.stand <- scale(wine[-1])  # To standarize the variables
+k.means.fit <- kmeans(wine.stand, 3)
+
+attributes(k.means.fit)
+k.means.fit$cluster
+
+# Cluster size:
+k.means.fit$size
+
+# the percentage of variance explained by the clusters against the number of clusters
+wssplot <- function(data, nc=15, seed=1234){
+  wss <- (nrow(data)-1)*sum(apply(data,2,var))
+  for (i in 2:nc){
+    set.seed(seed)
+    wss[i] <- sum(kmeans(data, centers=i)$withinss)}
+  plot(1:nc, wss, type="b", xlab="Number of Clusters",
+       ylab="Within groups sum of squares")}
+
+wssplot(wine.stand, nc=6) 
+
+library(cluster)
+clusplot(wine.stand, k.means.fit$cluster, main='2D representation of the Cluster solution',
+         color=TRUE, shade=TRUE,
+         labels=2, lines=0)
+
+Hierarchical clustering:
+d <- dist(wine.stand, method = "euclidean") # Euclidean distance matrix.
+H.fit <- hclust(d, method="ward") # Ward’s minimum variance criterion minimizes the total within-cluster variance
+plot(H.fit) # display dendogram
+groups <- cutree(H.fit, k=3) # cut tree into 5 clusters
+# draw dendogram with red borders around the 5 clusters
+rect.hclust(H.fit, k=3, border="red")
+
+
+
+# European protein consumption
+url = 'http://www.biz.uiowa.edu/faculty/jledolter/DataMining/protein.csv'
+food <- read.csv(url)
+head(food)
+grpMeat <- kmeans(food[,c("WhiteMeat","RedMeat")], centers=3, nstart=10)
+grpMeat
+
+## list of cluster assignments
+o=order(grpMeat$cluster)
+data.frame(food$Country[o],grpMeat$cluster[o])
+
+# To get all the records belonging to cluster 1:
+# data_clustered <- kmeans(data)
+# data_clustered$cluster
+# data$cluster <- data_clustered$cluster 
+# data_clus_1 <- data[data$cluster == 1,]
+plot(food$Red, food$White, type="n", xlim=c(3,19), xlab="Red Meat", ylab="White Meat")
+text(x=food$Red, y=food$White, labels=food$Country,col=grpMeat$cluster+1)
+
+groups <- cutree(foodagg, k=4) # cut tree into 3 clusters
+rect.hclust(foodagg, k=4, border="red")
+
+
+# http://www.learnbymarketing.com/tutorials/k-means-clustering-in-r-example/
+# 1) FRESH: annual spending (m.u.) on fresh products (Continuous); 
+# 2) MILK: annual spending (m.u.) on milk products (Continuous); 
+# 3) GROCERY: annual spending (m.u.)on grocery products (Continuous); 
+# 4) FROZEN: annual spending (m.u.)on frozen products (Continuous) 
+# 5) DETERGENTS_PAPER: annual spending (m.u.) on detergents and paper products (Continuous) 
+# 6) DELICATESSEN: annual spending (m.u.)on and delicatessen products (Continuous); 
+# 7) CHANNEL: customersâ€™ Channel - Horeca (Hotel/Restaurant/CafÃ©) or Retail channel (Nominal) 
+# 8) REGION: customersâ€™ Region â€“ Lisnon, Oporto or Other (Nominal) 
+
+
+# PCA and Clustering practice
+
+#
+library(ggplot2)
+data(diamonds)
+
+#
+data <-read.csv("/Users/byounggugkwon/Dropbox/Statlecture/24h/data/Wholesalecustomers.csv",header=T)
+summary(data)
+
+#top.n.custs <- function (data,cols,n=5) { #Requires some data frame and the top N to remove
+#idx.to.remove <-integer(0) #Initialize a vector to hold customers being removed
+#for (c in cols){ # For every column in the data we passed to this function
+#col.order <-order(data[,c],decreasing=T) #Sort column "c" in descending order (bigger on top)
+#Order returns the sorted index (e.g. row 15, 3, 7, 1, ...) rather than the actual valuessorted.
+#idx <-head(col.order, n) #Take the first n of the sorted column C to
+#idx.to.remove <-union(idx.to.remove,idx) #Combine and de-duplicate the row ids that need to be #removed
+#}
+#return(idx.to.remove) #Return the indexes of customers to be removed
+#}
+#top.custs <-top.n.custs(data,cols=3:8,n=5)
+#length(top.custs) #How Many Customers to be Removed?
+#data[top.custs,] #Examine the customers
+#data.rm.top<-data[-c(top.custs),] #Remove the Customers
+
+#set.seed(76964057) #Set the seed for reproducibility
+#k <-kmeans(data.rm.top[,-c(1,2)], centers=5) #Create 5 clusters, Remove columns 1 and 2
+#k$centers #Display&nbsp;cluster centers
+#table(k$cluster)
+
+# rng<-2:20 #K from 2 to 20
+# tries <-100 #Run the K Means algorithm 100 times
+#avg.totw.ss <-integer(length(rng)) #Set up an empty vector to hold all of points
+#for(v in rng){ # For each value of the range variable
+# v.totw.ss <-integer(tries) #Set up an empty vector to hold the 100 tries
+# for(i in 1:tries){
+# k.temp <-kmeans(data.rm.top,centers=v) #Run kmeans
+# v.totw.ss[i] <-k.temp$tot.withinss#Store the total withinss
+# }
+# avg.totw.ss[v-1] <-mean(v.totw.ss) #Average the 100 total withinss
+#}
+#plot(rng,avg.totw.ss,type="b", main="Total Within SS by Various K",
+# ylab="Average Total Within Sum of Squares",
+# xlab="Value of K")
+
