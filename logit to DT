@@ -1,0 +1,101 @@
+df<-read.csv('http://www-bcf.usc.edu/~gareth/ISL/Heart.csv')
+str(df)
+# Heart 데이터는 흉부외과 환자 303명을 관찰한 데이터로,
+# AHD 칼럼에 각 환자들이 심장병이 있는지 여부가 기록
+
+
+# Decision Tree
+df<-read.csv('http://www-bcf.usc.edu/~gareth/ISL/Heart.csv')
+str(df)
+# Heart 데이터는 흉부외과 환자 303명을 관찰한 데이터로,
+# AHD 칼럼에 각 환자들이 심장병이 있는지 여부가 기록
+
+head(df)
+
+install.packages("caret")
+library(caret)
+set.seed(1000) #reproducability setting
+intrain<-createDataPartition(y=df$AHD, p=0.7, list=FALSE) 
+train<-df[intrain, ]
+test<-df[-intrain, ]
+
+# 가지치기(PRUNING)
+
+
+install.packages("tree")
+library(tree)
+treemod<-tree(AHD~. , data=train)
+plot(treemod)
+text(treemod)
+cv.trees<-cv.tree(treemod, FUN=prune.misclass ) # for classification decision tree
+plot(cv.trees)
+# CV그래프를 보니 6개의 가지가 있는 의사결정나무가 가장 분산이 낮음
+
+
+
+prune.trees <- prune.misclass(treemod, best=6)
+plot(prune.trees)
+text(prune.trees, pretty=0)
+
+# 예측하기 & 모델 평가
+install.packages("e1071")
+library(e1071)
+treepred <- predict(prune.trees, test, type='class')
+confusionMatrix(treepred, test$AHD)
+
+
+
+# party를 사용한 의사결정나무 모델의 예측 정확도
+install.packages("party")
+library(party)
+partymod<-ctree(AHD~., data=train)
+plot(partymod)
+
+
+# practice with more data
+data(iris)
+iris_ctree <- ctree(Species ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width, data=iris)
+print(iris_ctree)
+plot(iris_ctree)
+
+
+# logit regression  vs. DT
+install.packages("readr")
+install.packages("ROCR")
+install.packages("rpart.plot")
+
+library(readr)
+library(dplyr)
+library(party)
+library(rpart)
+library(rpart.plot)
+library(ROCR)
+set.seed(100)
+
+titanic3 <- "https://goo.gl/At238b" %>%
+  read_csv %>% # read in the data
+  select(survived, embarked, sex, 
+         sibsp, parch, fare) %>%
+  mutate(embarked = factor(embarked),
+         sex = factor(sex))
+
+# survived: 0 if died, 1 if survived
+# embarked: Port of Embarkation (Cherbourg, Queenstown,Southampton)
+# sex: Gender
+# sibsp: Number of Siblings/Spouses Aboard
+# parch: Number of Parents/Children Aboard
+# fare: Fare Payed
+
+# build your logit model # Do your magic
+# build your DT model with using party package
+
+
+# build your DT model
+.data <- c("training", "test") %>%
+  sample(nrow(titanic3), replace = T) %>%
+  split(titanic3, .)
+    
+rtree_fit <- rpart(survived ~ ., 
+          .data$training) 
+rpart.plot(rtree_fit)
+
