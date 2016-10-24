@@ -1,0 +1,30 @@
+##################################################
+#################Logit Model######################
+##################################################
+# http://www.ats.ucla.edu/stat/mult_pkg/faq/general/odds_ratio.htm
+
+mydata <- read.csv("http://www.ats.ucla.edu/stat/data/binary.csv")
+## view the first few rows of the data
+head(mydata)
+
+summary(mydata)
+
+sapply(mydata, sd)
+
+## two-way contingency table of categorical outcome and predictors
+## we want to make sure there are not 0 cells
+# The variable rank takes on the values 1 through 4. Institutions with a rank of 1 have the highest prestige, while those with a rank of 4 have the lowest.
+xtabs(~ admit + rank, data = mydata)
+
+mydata$rank <- factor(mydata$rank)
+mylogit <- glm(admit ~ gre + gpa + rank, data = mydata, family = "binomial")
+# The code below estimates a logistic regression model using the glm (generalized linear model) function. 
+# First, we convert rank to a factor to indicate that rank should be treated as a categorical variable.
+
+summary(mylogit)
+# having attended an undergraduate institution with rank of 2, versus an institution with a rank of 1, changes the log odds of admission by -0.675.
+## CIs using profiled log-likelihood
+confint(mylogit)
+
+
+
