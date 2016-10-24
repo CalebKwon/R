@@ -1,0 +1,35 @@
+# Classical MDS
+# N rows (objects) x p columns (variables)
+# each row identified by a unique row name
+
+d <- dist(mydata) # euclidean distances between the rows
+fit <- cmdscale(d,eig=TRUE, k=2) # k is the number of dim
+fit # view results
+
+# plot solution 
+x <- fit$points[,1]
+y <- fit$points[,2]
+plot(x, y, xlab="Coordinate 1", ylab="Coordinate 2", 
+  main="Metric	MDS",	type="n")
+text(x, y, labels = row.names(mydata), cex=.7)
+
+
+
+dist.au <- read.csv("http://rosetta.reltech.org/TC/v15/Mapping/data/dist-Aus.csv")
+dist.au
+
+row.names(dist.au) <- dist.au[, 1]
+dist.au <- dist.au[, -1]
+dist.au
+
+fit <- cmdscale(dist.au, eig = TRUE, k = 2)
+x <- fit$points[, 1]
+y <- fit$points[, 2]
+
+plot(x, y, pch = 19, xlim = range(x) + c(0, 600))
+city.names <- c("Adelaide", "Alice Springs", "Brisbane", "Darwin", "Hobart", 
+    "Melbourne", "Perth", "Sydney")
+text(x, y, pos = 4, labels = city.names)
+
+
+# practice with hsb2 data
