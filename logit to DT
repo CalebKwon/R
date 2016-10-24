@@ -90,6 +90,12 @@ titanic3 <- "https://goo.gl/At238b" %>%
 # build your DT model with using party package
 
 
+
+
+# logit model
+# model <- glm(Survived ~.,family=binomial(link='logit'),data=ttitanic3)
+
+
 # build your DT model
 .data <- c("training", "test") %>%
   sample(nrow(titanic3), replace = T) %>%
