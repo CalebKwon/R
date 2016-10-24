@@ -1,6 +1,27 @@
 ##################################################
 #################Logit Model######################
-##################################################
+#################################################
+# 계수 해석: x가 한단위 증가할 때 증가/감소하는 y의 로그 확률은 ...이다.??
+
+############
+data(mtcars)
+
+model <- glm(formula= vs ~ wt + disp, data=mtcars, family=binomial)
+
+summary(model)
+
+newdata = data.frame(wt = 2.1, disp = 180)
+predict(model, newdata, type="response")
+
+# 모형의 적합도는 AIC를 비교하여 평가하게 된다. AIC는 일종의 편차 개념인데, 이것이 작은 모형일수록 좋은 모형으로 평가한다.
+# 지금과 같은 경우, 비교의 대상은 Null model(영가설을 모형으로 본 것)과 로지스틱 회귀 model의 둘이다.
+# Null model의 AIC는 deviance와 동일하다. 즉 43.86이다. 로지스틱회귀의 AIC는 밑에 나와 있는 것과 같이 27.4이다.
+# 이 값은 Resudual deviance에다가 사용된 parameter 곱하기 2를 더해준 값이다.
+# Null model과 회귀모형 중 후자의 AIC가 작으므로 후자를 선택해야 한다. 즉 영가설은 기각된다.
+
+
+
+# ex1
 # http://www.ats.ucla.edu/stat/mult_pkg/faq/general/odds_ratio.htm
 
 mydata <- read.csv("http://www.ats.ucla.edu/stat/data/binary.csv")
@@ -27,4 +48,16 @@ summary(mylogit)
 confint(mylogit)
 
 
+# ex2
+NH11 <- readRDS("NatHealth2011.rds")
+labs <- attributes(NH11)$labels
+
+#str(NH11$hypev) # check stucture of hypev
+#levels(NH11$hypev) # check levels of hypev
+# collapse all missing values to NA
+#NH11$hypev <- factor(NH11$hypev, levels=c("2 No", "1 Yes"))
+# run our regression model
+#hyp.out <- glm(hypev~age_p+sex+sleep+bmi,
+              data=NH11, family="binomial")
+coef(summary(hyp.out))
 
