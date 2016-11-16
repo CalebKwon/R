@@ -137,6 +137,7 @@ ggplot(data = mpg) +
  # facet_grid(cyl ~ .)
    facet_grid(. ~ cyl)
 
+
 # histogram
 # http://tutorials.iq.harvard.edu/R/Rgraphics/Rgraphics.html
 # http://r4ds.had.co.nz/data-visualisation.html
@@ -227,6 +228,30 @@ p + stat_bin(geom="line")
 
 p + geom_histogram(aes(fill = clarity))
 p + geom_histogram(aes(y = ..density..))
+
+
+
+# Changing the Default Order of Legend Labels and Stacking of Data
+# https://learnr.wordpress.com/2010/03/23/ggplot2-changing-the-default-order-of-legend-labels-and-stacking-of-data/
+
+# ggplot(diamonds, aes(clarity, fill = cut)) + geom_bar()
+# You notice that in the legend “Fair” is at the top and “Ideal” at the bottom. 
+# But what if I would like to order the labels in the reverse order, so that “Ideal” would be at the top?
+# The order of legend labels can be manipulated by reordering the factor levels of the cut variable mapped to fill aesthetic.
+
+levels(diamonds$cut)
+diamonds$cut <- factor(diamonds$cut, levels = rev(levels(diamonds$cut)))
+levels(diamonds$cut)
+ggplot(diamonds, aes(clarity, fill = cut)) + geom_bar()
+
+
+# Changing Data Stacking Order
+ggplot(diamonds, aes(clarity, fill = cut, order = -as.numeric(cut))) +
++     geom_bar()
+
+diamonds$cut <- factor(diamonds$cut, levels = rev(levels(diamonds$cut)))
+ggplot(diamonds, aes(clarity, fill = cut, order = -as.numeric(cut))) +
++     geom_bar()
 
 #########################################################################
 # http://zevross.com/blog/2014/08/04/beautiful-plotting-in-r-a-ggplot2-cheatsheet-3/
