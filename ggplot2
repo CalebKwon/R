@@ -253,6 +253,10 @@ diamonds$cut <- factor(diamonds$cut, levels = rev(levels(diamonds$cut)))
 ggplot(diamonds, aes(clarity, fill = cut, order = -as.numeric(cut))) +
 +     geom_bar()
 
+
+# new - ggplot2 2.2.0
+# https://www.r-bloggers.com/ggplot2-2-2-0/
+
 #########################################################################
 # http://zevross.com/blog/2014/08/04/beautiful-plotting-in-r-a-ggplot2-cheatsheet-3/
 library(ggplot2)
