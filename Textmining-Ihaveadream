@@ -1,0 +1,104 @@
+############### 2nd Example##########
+filePath <- "http://www.sthda.com/sthda/RDoc/example-files/martin-luther-king-i-have-a-dream-speech.txt"
+text <- readLines(filePath)
+
+# Load the data as a corpus
+docs <- Corpus(VectorSource(text))
+
+inspect(docs)
+
+toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
+docs <- tm_map(docs, toSpace, "/")
+docs <- tm_map(docs, toSpace, "@")
+docs <- tm_map(docs, toSpace, "\\|")
+
+
+# Convert the text to lower case
+docs <- tm_map(docs, content_transformer(tolower))
+
+# Remove numbers
+docs <- tm_map(docs, removeNumbers)
+
+# Remove english common stopwords
+docs <- tm_map(docs, removeWords, stopwords("english"))
+
+# Remove your own stop word
+# specify your stopwords as a character vector
+docs <- tm_map(docs, removeWords, c("blabla1", "blabla2")) 
+
+# Remove punctuations
+docs <- tm_map(docs, removePunctuation)
+
+# Eliminate extra white spaces
+docs <- tm_map(docs, stripWhitespace)
+
+# Text stemming
+# docs <- tm_map(docs, stemDocument)
+
+dtm <- TermDocumentMatrix(docs)
+m <- as.matrix(dtm)
+v <- sort(rowSums(m),decreasing=TRUE)
+d <- data.frame(word = names(v),freq=v)
+head(d, 10)
+
+set.seed(1234)
+wordcloud(words = d$word, freq = d$freq, min.freq = 1,
+          max.words=200, random.order=FALSE, rot.per=0.35, 
+          colors=brewer.pal(8, "Dark2"))
+          
+findFreqTerms(dtm, lowfreq = 4)
+
+findAssocs(dtm, terms = "freedom", corlimit = 0.3)
+
+barplot(d[1:10,]$freq, las = 2, names.arg = d[1:10,]$word,
+        col ="lightblue", main ="Most frequent words",
+        ylab = "Word frequencies")
+        
+# social network Analisys
+# change it to a Boolean matrix
+
+m[m>=1] <- 1
+# transform into a term-term adjacency matrix
+SNM <- m %*% t(m)
+# inspect terms numbered 5 to 10
+SNM
+
+
+library(igraph)
+# build a graph from the above matrix
+g <- graph.adjacency(SNM, weighted=T, mode = "undirected")
+# remove loops
+g <- simplify(g)
+# set labels and degrees of vertices
+V(g)$label <- V(g)$name
+V(g)$degree <- degree(g)
+
+# set seed to make the layout reproducible
+set.seed(3952)
+layout1 <- layout.fruchterman.reingold(g)
+plot(g, layout=layout1)
+
+plot(g, layout=layout.kamada.kawai)
+
+V(g)$label.cex <- 2.2 * V(g)$degree / max(V(g)$degree)+ .2
+V(g)$label.color <- rgb(0, 0, .2, .8)
+V(g)$frame.color <- NA
+egam <- (log(E(g)$weight)+.4) / max(log(E(g)$weight)+.4)
+E(g)$color <- rgb(.5, .5, 0, egam)
+E(g)$width <- egam
+# plot the graph in layout1
+plot(g, layout=layout1)
+
+
+####### 한글 ######
+http://rstudio-pubs-static.s3.amazonaws.com/1617_b9a9f37daa2d48d9be83ad0b91d7fdf4.html
+
+mydata<-read.table("~/Dropbox/Statlecture/24h/data/sunhu.txt",sep="\t", 
+               col.names=c("id", "name"), 
+               fill=FALSE, 
+               strip.white=TRUE) 
+               
+install.packages("readr")
+library(readr)
+mystring <- read_file("~/Dropbox/Statlecture/24h/data/sunhu.txt")
+
