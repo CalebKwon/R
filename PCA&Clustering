@@ -24,7 +24,7 @@ secu_com_finance<- transform(secu_com_finance,
                                     V4_s2 = max(V4_s) - V4_s)
  
 # variable selection
-secu_com_finance<- secu_com_finance_2007[,c("company", "V1_s", "V2_s", "V3_s", "V4_s2", "V5_s")]
+secu_com_finance<- secu_com_finance[,c("company", "V1_s", "V2_s", "V3_s", "V4_s2", "V5_s")]
 
 # Correlation analysis
 cor(secu_com_finance[,-1])
