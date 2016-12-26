@@ -1,0 +1,233 @@
+# Text Mining
+# https://rstudio-pubs-static.s3.amazonaws.com/31867_8236987cf0a8444e962ccd2aec46d9c3.html
+# http://rstudio-pubs-static.s3.amazonaws.com/1617_b9a9f37daa2d48d9be83ad0b91d7fdf4.html
+# http://www.r-bloggers.com/text-mining-the-complete-works-of-william-shakespeare/
+ Needed <- c("tm", "SnowballCC", "RColorBrewer", "ggplot2", "wordcloud", "biclust", "cluster", "igraph", "fpc")   
+install.packages(Needed, dependencies=TRUE)   
+install.packages("KoNLP")
+install.packages("SnowballC")  
+install.packages("Rcampdf", repos = "http://datacube.wu.ac.at/", type = "source")  
+install.packages("tm")
+install.packages("NLP")
+library(KoNLP)
+library(wordcloud) 
+library(tm)
+library(NLP)
+
+TEXTFILE <-"http://www.gutenberg.org/cache/epub/100/pg100.txt"
+
+# don't touch
+shakespeare<-readLines(TEXTFILE)
+
+length(shakespeare)
+
+shakespeare = readLines(TEXTFILE)
+shakespeare = readLines(TEXTFILE)
+
+length(shakespeare)
+head(shakespeare)
+tail(shakespeare)
+
+# There seems to be some header and footer text. We will want to get rid of that! 
+shakespeare = shakespeare[-(1:173)]
+shakespeare = shakespeare[-(124195:length(shakespeare))]
+shakespeare = paste(shakespeare, collapse = " ")
+
+# 하나로 묶어짐
+length(shakespeare)
+
+shakespeare = strsplit(shakespeare, "<<[^>]*>>")[[1]]
+
+length(shakespeare)
+
+# Dramatis Personae = 배역표(配役表) # Dramatis Personae가 들어간 리스트들빼기
+(dramatis.personae <- grep("Dramatis Personae", shakespeare, ignore.case = TRUE))
+
+
+doc.vec <- VectorSource(shakespeare)
+doc.corpus <- Corpus(doc.vec)
+summary(doc.corpus)
+
+doc.corpus <- tm_map(doc.corpus, tolower)
+doc.corpus <- tm_map(doc.corpus, removePunctuation)
+doc.corpus <- tm_map(doc.corpus, removeNumbers)
+doc.corpus <- tm_map(doc.corpus, removeWords, stopwords("english"))
+
+
+library(SnowballC)
+
+doc.corpus<-tm_map(doc.corpus, stemDocument)
+docs <- tm_map(doc.corpus, stripWhitespace) 
+docs <- tm_map(docs, PlainTextDocument) 
+dtm <- DocumentTermMatrix(docs)   
+dtm 
+tdm<-TermDocumentMatrix(docs)   
+dim(tdm) 
+
+freq <- colSums(as.matrix(dtm))   
+length(freq)
+
+ord <- order(freq) 
+
+# If you prefer to export the matrix to Excel:   
+m <- as.matrix(dtm)   
+dim(m)   
+write.csv(m, file="dtm.csv")  
+
+dtms <- removeSparseTerms(dtm, 0.1) # This makes a matrix that is 10% empty space, maximum.   
+inspect(dtms) 
+
+freq[head(ord)] 
+
+freq <- colSums(as.matrix(dtms))   
+freq 
+
+freq <- sort(colSums(as.matrix(dtm)), decreasing=TRUE)   
+head(freq, 14) 
+
+findFreqTerms(dtm, lowfreq=1000)   # Change "50" to whatever is most appropriate for your text data
+
+
+wf <- data.frame(word=names(freq), freq=freq)   
+head(wf) 
+
+
+# Plot words that appear at least 50 times
+library(ggplot2)   
+p <- ggplot(subset(wf, freq>1000), aes(word, freq))    
+p <- p + geom_bar(stat="identity")   
+p <- p + theme(axis.text.x=element_text(angle=45, hjust=1))   
+p 
+
+# Plot words that occur at least 25 times.
+library(wordcloud) 
+wordcloud(names(freq), freq, min.freq=100)   
+
+# Plot the 100 most frequently used words.
+wordcloud(names(freq), freq, max.words=100) 
+
+# Add some color and plot words occurring at least 20 times.
+wordcloud(names(freq), freq, min.freq=20, scale=c(5, .1), colors=brewer.pal(6, "Dark2")) 
+
+# Plot the 100 most frequently occurring words.
+set.seed(142)   
+dark2 <- brewer.pal(6, "Dark2")   
+wordcloud(names(freq), freq, max.words=100, rot.per=0.2, colors=dark2) 
+
+dtmss <- removeSparseTerms(dtm, 0.15) # This makes a matrix that is only 15% empty space, maximum.   
+inspect(dtmss) 
+
+
+
+
+
+
+
+
+
+
+
+############### 2nd Example##########
+filePath <- "http://www.sthda.com/sthda/RDoc/example-files/martin-luther-king-i-have-a-dream-speech.txt"
+text <- readLines(filePath)
+
+# Load the data as a corpus
+docs <- Corpus(VectorSource(text))
+
+inspect(docs)
+
+toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
+docs <- tm_map(docs, toSpace, "/")
+docs <- tm_map(docs, toSpace, "@")
+docs <- tm_map(docs, toSpace, "\\|")
+
+
+# Convert the text to lower case
+docs <- tm_map(docs, content_transformer(tolower))
+
+# Remove numbers
+docs <- tm_map(docs, removeNumbers)
+
+# Remove english common stopwords
+docs <- tm_map(docs, removeWords, stopwords("english"))
+
+# Remove your own stop word
+# specify your stopwords as a character vector
+docs <- tm_map(docs, removeWords, c("blabla1", "blabla2")) 
+
+# Remove punctuations
+docs <- tm_map(docs, removePunctuation)
+
+# Eliminate extra white spaces
+docs <- tm_map(docs, stripWhitespace)
+
+# Text stemming
+# docs <- tm_map(docs, stemDocument)
+
+dtm <- TermDocumentMatrix(docs)
+m <- as.matrix(dtm)
+v <- sort(rowSums(m),decreasing=TRUE)
+d <- data.frame(word = names(v),freq=v)
+head(d, 10)
+
+set.seed(1234)
+wordcloud(words = d$word, freq = d$freq, min.freq = 1,
+          max.words=200, random.order=FALSE, rot.per=0.35, 
+          colors=brewer.pal(8, "Dark2"))
+          
+findFreqTerms(dtm, lowfreq = 4)
+
+findAssocs(dtm, terms = "freedom", corlimit = 0.3)
+
+barplot(d[1:10,]$freq, las = 2, names.arg = d[1:10,]$word,
+        col ="lightblue", main ="Most frequent words",
+        ylab = "Word frequencies")
+        
+# social network Analisys
+# change it to a Boolean matrix
+
+m[m>=1] <- 1
+# transform into a term-term adjacency matrix
+SNM <- m %*% t(m)
+# inspect terms numbered 5 to 10
+SNM
+
+
+library(igraph)
+# build a graph from the above matrix
+g <- graph.adjacency(SNM, weighted=T, mode = "undirected")
+# remove loops
+g <- simplify(g)
+# set labels and degrees of vertices
+V(g)$label <- V(g)$name
+V(g)$degree <- degree(g)
+
+# set seed to make the layout reproducible
+set.seed(3952)
+layout1 <- layout.fruchterman.reingold(g)
+plot(g, layout=layout1)
+
+plot(g, layout=layout.kamada.kawai)
+
+V(g)$label.cex <- 2.2 * V(g)$degree / max(V(g)$degree)+ .2
+V(g)$label.color <- rgb(0, 0, .2, .8)
+V(g)$frame.color <- NA
+egam <- (log(E(g)$weight)+.4) / max(log(E(g)$weight)+.4)
+E(g)$color <- rgb(.5, .5, 0, egam)
+E(g)$width <- egam
+# plot the graph in layout1
+plot(g, layout=layout1)
+
+
+####### 한글 ######
+http://rstudio-pubs-static.s3.amazonaws.com/1617_b9a9f37daa2d48d9be83ad0b91d7fdf4.html
+
+mydata<-read.table("~/Dropbox/Statlecture/24h/data/sunhu.txt",sep="\t", 
+               col.names=c("id", "name"), 
+               fill=FALSE, 
+               strip.white=TRUE) 
+               
+install.packages("readr")
+library(readr)
+mystring <- read_file("~/Dropbox/Statlecture/24h/data/sunhu.txt")
+
