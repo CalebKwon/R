@@ -1,3 +1,22 @@
+# Text Mining
+# https://rstudio-pubs-static.s3.amazonaws.com/31867_8236987cf0a8444e962ccd2aec46d9c3.html
+# http://rstudio-pubs-static.s3.amazonaws.com/1617_b9a9f37daa2d48d9be83ad0b91d7fdf4.html
+# http://www.r-bloggers.com/text-mining-the-complete-works-of-william-shakespeare/
+ Needed <- c("tm", "SnowballCC", "RColorBrewer", "ggplot2", "wordcloud", "biclust", "cluster", "igraph", "fpc")   
+install.packages(Needed, dependencies=TRUE)   
+install.packages("KoNLP")
+install.packages("SnowballC")  
+install.packages("Rcampdf", repos = "http://datacube.wu.ac.at/", type = "source")  
+install.packages("tm")
+install.packages("NLP")
+library(KoNLP)
+library(wordcloud) 
+library(tm)
+library(NLP)
+
+
+
+
 ############### 2nd Example##########
 filePath <- "http://www.sthda.com/sthda/RDoc/example-files/martin-luther-king-i-have-a-dream-speech.txt"
 text <- readLines(filePath)
