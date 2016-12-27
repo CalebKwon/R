@@ -18,3 +18,7 @@ http://news.kbs.co.kr/news/view.do?ncd=3390429
 
 #   꺽은선
 http://t-redactyl.io/blog/2015/12/creating-plots-in-r-using-ggplot2-part-1-line-plots.html
+
+# 데이터 속성 변환 
+# 데이터 내 데이터 변환 , 연속-> 범주형 
+# 상관분석->chi square
