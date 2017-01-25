@@ -219,6 +219,14 @@ with(hsb2_male, points(math, write, pch=20, col="darkblue"))
 # race == 2
 # race == 3
 # race == 4 
+hsb2_r1<-hsb2[race==1,]
+hsb2_r2<-hsb2[race==2,]
+hsb2_r3<-hsb2[race==3,]
+hsb2_r4<-hsb2[race==4,]
+with(hsb2_r1, plot(math, write, pch=20, col="darkred"))
+with(hsb2_r2, points(math, write, pch=20, col="darkblue"))
+with(hsb2_r3, points(math, write, pch=20, col="green"))
+with(hsb2_r4, points(math, write, pch=20, col="pink"))
 
 
 # alternatively 
@@ -243,18 +251,27 @@ legend(65, 35, c("female", "male"), pch=c(20, 22),
        cex=.8, col=c("darkred", "darkblue"))
 
 
-# male vs female
-math_male<-hsb2$math[female==0]
-write_male<-hsb2$write[female==0]
-math_female<-hsb2$math[female==1]
-write_female<-hsb2$write[female==1]
-plot(math_female, write_female, type="p", pch=20,
-     col="darkred", ylim=c(25, 70))
-points(math_male, write_male, pch=22, col="darkblue")
-abline(lsfit(write_female, math_female), col="darkred")
-abline(lsfit(write_male, math_male), col="darkblue")
+hsb2_female<-hsb2[female==1,]
+hsb2_male<-hsb2[female==0,]
+with(hsb2_female, plot(math, write, pch=20, 
+     col="darkred", ylim=c(25, 70)))
+with(hsb2_male, points(math, write, pch=22, 
+     col="darkblue"))
+with(hsb2_female,abline(lsfit(write, math), col="darkred"))
+with(hsb2_male,abline(lsfit(write, math), col="darkblue"))
 legend(65, 35, c("female", "male"), pch=c(20, 22), 
        cex=.8, col=c("darkred", "darkblue"))
+
+
+hsb2_r1<-hsb2[race==1,]
+hsb2_r2<-hsb2[race==2,]
+hsb2_r3<-hsb2[race==3,]
+hsb2_r4<-hsb2[race==4,]
+with(hsb2_r1, plot(math, write, pch=20, col="darkred"))
+with(hsb2_r2, points(math, write, pch=20, col="darkblue"))
+with(hsb2_r3, points(math, write, pch=20, col="green"))
+with(hsb2_r4, points(math, write, pch=20, col="pink"))
+
 
 # race의 math와 write의 산점도, 추세선, 레전드 그려보기
 math_race1<-hsb2$math[race==1]
