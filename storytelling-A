@@ -1,0 +1,836 @@
+# vers. 1.0
+### ----- 1장----- ###
+
+# 왼쪽 기호를 샵 기호(#)라고 하며,
+# RStudio(R)는 이 기호 오른쪽에 있는 내용을 무시합니다.
+# 이 기호를 이용해서 주석을 기록해둡니다.
+
+
+
+# R을 이용한 추첨 시뮬레이션
+# 꽝과 1등을 뽑는 lottery 작성
+lottery <- c("꽝","1등")
+# lottery 내용 확인
+lottery
+
+# lottery의 요소는 두 개지만 R 명령으로
+# '꽝'과 '1등'을 99:1의 비율로 등장하도록
+# 조정할 수 있다.
+sample(lottery, 1, prob = c(99,1))
+# sample은 무작위(랜덤)로 추출하는 함수로
+# 위에서 하나만 추출하고 있다
+
+# 100개 추출하는 경우 replace = TRUE를 추가로 지정하면 된다.
+# 몇 번 추출하든지 99:1 비율으 변하지 않는다.
+sample(lottery, 100, prob = c(99,1), replace = TRUE)
+
+
+#　추첨을 매일 100회, 일주일동안 뽑아서 1등이 나온 횟수를 시뮬레이션
+replicate (7, sample (lottery, 100, prob = c(99,1), replace = TRUE) ) # 100행 7열의 결과가 표시된다
+# replicate 라는 함수는 명령을 지정한 횟수만큼 반복 실행한다
+### 구문: replicate (횟수, 명령)
+
+# １등이 나온 횟수를 센다
+sum ( replicate (7, sample (lottery, 100, prob = c(99,1), replace = TRUE) ) == "1등")
+### 구문  sum (A == "1등"), A 안에 포함된 1등을 세는 명령
+
+
+# 100회 추첨하는 것을 7일 반복해서 1등이 나온 총 횟수를 구한다.
+# 그리고 이 계산을 1000주 반복하는 명령을 작성한다
+# 결과는 res로 저장한다
+res <- replicate(1000, sum(replicate (7, sample (lottery, 100, prob = c(99,1), replace = TRUE) ) == "1등"))
+
+### 구문 　replicate (1000, 합계（replicate (7, 100회 추첨했을 때의 1등이 나온 횟수）)
+
+# 간단한 히스토그램 작성 
+hist(res)
+
+#  좀 더 정교한 그래프 생성
+# ggplot2를 아직 설치하지 않은 경우 
+# 책 부록에 있는 '번외편'을 참고할 것.
+# 또는 아래의 명령을(앞의 #는 삭제한 후) 실행해도 된다
+# install.packages("ggplot2")
+# 참고로 패키지 설치는 한 번만 하면 된다
+# (다른 날에 R스튜디오를 실행하는 경우, 이미 ggplot2를 설치했다면,
+# 다시 설치 과정을 실행할 필요가 없다. 
+
+# ggplt2를 사용하기 위해 패키지를 읽는다
+library(ggplot2)
+
+### 그래프를 그리기 위해 데이터 가공하기 
+resD <- as.data.frame(table(res))
+# 위에서 10줄만 표시
+head (resD, n = 10)# 
+
+### 수치를 랜덤 생성하고 있으므로 실행 결과는 매번 달라진다
+ggplot(resD, aes(y=Freq, x = res)) +  geom_bar(stat= "identity", fill = "steelblue") + xlab("주당 당첨 횟수") + ylab ("누적 기간") + ggtitle("히스토그램") 
+
+
+
+# RStudio 가지고 놀기
+
+# 덧셈
+1 + 2 + 3 + 4 + 5
+
+sum (1:1000)
+
+1:6
+
+sample (1:6, 1)
+sample (1:6, 1)
+
+sample (1:6, 100, replace = TRUE)
+
+# 재귀
+lottery <- c("꽝","1등")
+lottery # 확인
+# lottery에서 한 개를 꺼낸다. 단, '꽝'과 '1등'이 99:1의 비율로 나오도록 설정
+sample(lottery, 1, prob = c(99,1))
+
+sample(lottery, 100, prob = c(99,1), replace = TRUE)
+
+
+# 주사위를 100회(100개) 던진다
+table (sample (1:6, 100, replace = TRUE))
+
+# 히스토그램
+hist (sample (1:6, 100, replace = TRUE), breaks = 0:6)
+
+
+# 주사위의 평균값(랜덤으로 던진 결과이므로 매번 숫자가 다르다）
+mean(sample (1:6, 100, replace = TRUE))
+
+# 주사위를 1만번 던지는 시뮬레이션과 히스토그램
+res <- sample(1:6, 10000, replace = TRUE)
+
+# 긴단한 히스토그램
+hist(res, breaks = 0:6)
+
+# 좀 더 정교한 그래프를 작성하기 위한 데이터 가공 
+dice <- data.frame(주사위= res)
+# 시작 부분 확인
+head (dice)
+
+# 그래프 그리기
+ggplot(dice, aes (x = 주사위)) + xlim(1,6) + geom_histogram(binwidth = 1 , fill = "steelblue", colour="black",  alpha = 0.5) + xlab("나온 수") + ylab ("횟수") + ggtitle("주사위를 1만번 던진 결과") 
+
+
+# 주사위의 평균값과 기댓값
+# 여기서도 명령을 반복 실행하는 replicate 사용
+res <- replicate(100000,  mean (sample(1:6, 100,replace = TRUE)))
+# 간단한 히스토그램
+hist(res)
+
+# 좀 더 정교한 그래프를 생성하기 위한 데이터 가공 
+dice <- data.frame(주사위 = res)
+# 그래프 그리기
+ggplot(dice, aes (x = 주사위)) + geom_histogram(binwidth = .1, fill = "steelblue", colour="black",  alpha = 0.5) + xlab("기댓값") + ylab ("횟수") + ggtitle("주사위를 100회 던진 기댓값") 
+
+
+# vers. 1.0
+### ----- 제2장 -----###
+
+# RStudio 기초
+1 + 2
+2 * 3 * 4
+8 / 4 / 2
+
+
+#　１부터 10까지의 정수
+1:10
+# 1부터 10까지의 합
+sum (1:10)
+# 1부터 10까지의 평균
+mean (1:10)
+
+
+# 파일 읽기 창을 통해 데이터 읽기
+breads <- read.csv (file.choose()) 
+# Chapter02/breads.csv 선택 
+## 파일명을 지정할 수도 있다. 단, 파일 위치 지정에 주의해야 한다.
+# breads <- read.csv ("Chapter02/breads.csv")
+## breads <- read.csv (file.choose())
+# 데이터 앞부분만 표시
+head (breads)
+
+# 평균값 
+mean (breads$weight)
+# 표준편차 
+sd (breads$weight)
+
+
+# 표준편차의 의미 
+# 히스토그램을 그려본다
+library (ggplot2)
+ggplot (breads, aes(x = weight)) + geom_histogram(binwidth = 10, fill = "steelblue", colour="black",  alpha = 0.5) + xlab("식빵의 무게") + ylab ("개수") + ggtitle("식빵 히스토그램")
+
+## 정규분포(주사위의 기댓값 예) 
+mean (sample (1:6, 10,replace = TRUE))
+
+
+## 주사위를 10회 던지는 시뮬레이션을 100000회 반복
+# 10만회 실시
+res <- replicate(100000,  mean (sample(1:6, 100, replace = TRUE)))
+
+
+# 간단한 히스토그램 생성 
+hist(res)
+
+# 좀 더 고급스러운 그래프 생성
+library(ggplot2)
+# 데이터 가공　
+dice <- data.frame(주사위= res)
+head (dice)
+
+
+ggplot(dice, aes (x = 주사위)) + geom_histogram(aes(y = ..density..),binwidth = .1, fill = "steelblue", colour="black",  alpha = 0.5) + xlab("기댓값") + ylab ("") + ggtitle("주사위 평균값의 평균값") +   stat_function(geom="line", fun = dnorm, args=list(mean = mean (dice$주사위), sd = sd (dice$주사위)))
+##  +stat_function 이후 부분은 정규분포의 산 모양 곡선을 추가하는 코드
+
+# 평균값 차이 검증
+t.test (breads$weight, mu = 400)
+
+# vers. 1.0
+### ----- 제3장  ----- ###
+
+# 데이터를 분할표로 표현하기
+dat <- read.csv (file.choose())# AmosWIN/Chapter03/sample.csv를 선택
+# dat <- read.csv ("Chapter03/sample.csv")
+dat
+
+table (dat)
+
+# 파이프 연산자를 사용할 수 있는 패키지 설치
+# (패키지 설치 방법에 대해선 '번외편'을 참고
+# install.packages("dplyr") 
+
+# 패키지 이용 선언
+library (dplyr) 
+
+# 파이프 연사자 사용해보기(왼쪽 데이터를 오른쪽 처리에 적용한다)
+dat %>% table
+
+# 분할표 저장
+dat2 <-  dat %>% table
+dat2
+
+# 카이제곱 검증 실행
+dat2 %>% chisq.test 
+# chisq.test (dat2)# 이렇게 해도 동일한 결과를 얻을 수 있다
+
+# 독립성 검증의 의미
+survey <- read.csv(file.choose())# AmosWIN/Chapter03/survey.csv 선택
+# survey <- read.csv("Chapter03/survey.csv")
+survey %>% head # head (survey) 와 같다
+
+
+# 열을 선택해서 분할표 작성
+table1 <- survey  %>% select (입장, 응답6) %>% table
+table1
+
+# 그래프(누적 막대 그래프 작성)
+library(ggplot2)
+table1 %>% as.data.frame %>% ggplot(aes (x = 입장, y = Freq, fill = 응답6 )) + geom_bar(stat="identity") + ylab ("인수") 
+
+# 참고: 간단한 막대 그래프
+table1 %>% plot #   plot (table1)과 같음
+
+# 카이제곱 검증
+# 귀무 가설 '점주와 손님의 응답은 독립적이다'를 검증
+survey  %>% select (입장, 응답6) %>% table %>% chisq.test
+
+
+# 이건 뭐지?
+# 응답7에 대한 분할표 작성
+survey  %>% select (입장, 응답7) %>% table
+
+# ver1.0
+### ----- 제4장 ---- ###
+
+
+# 회장님에게서 받은 데이터를 분석 사장이 정리한 이후 부분부시 시작
+menus <- read.csv(file.choose(), stringsAsFactors =  FALSE, colClasses = c("factor","Date","numeric"))
+# /Chapter04/menus.csv 선택
+# menus <- read.csv("Chapter04/menus.csv", stringsAsFactors =  FALSE, colClasses = c("factor","Date","numeric"))
+# 세 개의 열이 각각 다른 성질을 가지고 있다.
+# 품목은 카테고리고 날짜는 날짜형 데이터, 매상은 숫자다.
+# 데이터를 읽을 때 각각데 데이터 형을 지정하고 있다(읽은 후에 설정할 수도 있다)
+
+# 데이터 처리 준비
+library(dplyr)
+
+# 열 명 확인
+menus %>% names # names (menus)와 같음
+
+# 데이터 처음 부분
+menus %>% head # head (menus)
+
+
+# Code 04-01 # 시계열 그래프 작성 준비
+
+library(ggplot2)
+
+# 삼각김밥의 매상을 추출
+onigiri <- menus %>%   filter (품목== "삼각김밥")  
+# 시계열 그래프（scale_x_date로 지정）
+ggplot(onigiri, aes(날짜, 매상)) + geom_line() +  scale_x_date()  + ggtitle("삼각김밥 매상")
+# 파이프 처리를 사용하면
+# onigiri %>% ggplot(aes(날짜, 매상)) + geom_line() +  scale_x_date()  + ggtitle("おにぎりの매상")
+
+# Code04-02
+# 볶음밥 매상
+rice <- menus %>% filter (품목 == "볶음밥")  
+#시계열 그래프
+rice %>% ggplot( aes(날짜, 매상)) + geom_line() +  scale_x_date()  + ggtitle("볶음밥 매상")
+
+
+# Code04-03
+# 면 종류 추출
+noodles <- menus %>%  filter (품목 %in% c( "스파게티", "비빔국수", "우동","짬뽕", "라면"))
+# 시계열 그래프
+noodles %>% ggplot(aes(날짜, 매상))+geom_line()+ facet_wrap (~품목) + ggtitle("면종류 매상")
+
+# Code-4-04
+# 상관 계수 
+# 데이터 정리를 위한 패키지 도입
+install.packages("tidyr") 
+library(tidyr)
+
+# 상관 행렬 작성을 위한 데이터 정리
+noodles2 <- menus %>%  filter (품목 %in% c("삼각김밥", "된장국", "카레", "국밥","스파게티", "비빔국수", "우동", "짬뽕", "라면")) %>%  spread (품목, 매상) 
+
+# 처음 부분 확인
+head (noodles2)
+# 상관 계수 구하기(-1은 날짜 부분을 제외한다）
+noodles2 [, -1] %>% cor #cor (noodles2 [, -1])
+## 다음은 Windows 이외의 OS에서만 동작한다
+# noodles %>% select (-날짜) %>% cor
+
+# 분포도 행렬 #첫 번째 열은 날짜이므로 제외하고 있다
+noodles2[, -1] %>% pairs #pairs ( noodles2[, -1] )
+
+# Code 04-5
+# 우동과 삼각김밥의 분포도
+udon <- menus %>% filter (품목 %in% c("삼각김밥", "우동")) %>% spread (품목, 매상)
+udon %>% ggplot(aes(우동, 삼각김밥)) + geom_point() + ggtitle("우동과 삼각김밥의 분포도")
+
+
+# Code 04-06
+# 삼각김밥과 우유의 분포도
+milk <- menus %>%  filter (품목 %in% c("삼각김밥", "우유")) %>%  spread (품목, 매상)
+
+milk %>% ggplot(aes(삼각김밥 , 우유)) + geom_point(size = 2, color = "grey50")  + geom_smooth(method = "lm", se = FALSE) + ggtitle("삼각김밥과 우유의 분포도")
+
+# Code 04-07
+# 우유 매상
+milk2 <-menus %>% filter (품목 == "우유")
+# 시계열 그래프
+milk2 %>% ggplot(aes(날짜, 매상)) + geom_line() +  scale_x_date()  + ggtitle("우유 매상")
+
+
+# Code 04-08 상관이 있다? 없다?
+# 신장과 연수입 데이터
+heights <- read.csv(file.choose())
+#  Chapter04/heights.csv를 선택
+# heights <- read.csv("Chapter04/heights.csv")
+
+# 상관 관계는 작다
+heights %>% cor # cor (heights)
+
+ggplot(heights, aes( 키,연수입)) + geom_point() +  ggtitle("신장과 연수입의 상관？")
+heights %>% ggplot(aes( 키,연수입)) + geom_point() +  ggtitle("신장과 연수입의 상관")
+
+
+# Code-04-09
+# 무상관 데이터
+xy <- data.frame (X = -10:10, Y =  (-10:10)^2)
+xy %>% ggplot(aes (x = X, y = Y)) + geom_point(size  =2 )+ ggtitle("상관 관계가 있는 것 같지만？")
+# ggplot(xy, aes (x = X, y = Y)) + geom_point(size  =2 )+ ggtitle("상관 관계가 있는 것 같지만？")
+#
+
+# 회귀 분석 
+# 아이스크림 판매 수 데이터를 읽어 icecream에 저장한다
+# Code04-09
+icecream <- read.csv(file.choose())
+#  Chapter04/icecream.csv을 선택한다
+# icecream <- read.csv("Chapter04/icecream.csv")
+icecream %>% head #head (icecream)
+# 기온과 판매 수의 분포도 작성
+icecream %>% ggplot(aes(기온, 판매수)) + geom_point(size = 2)
+# ggplot(icecream, aes(기온,  판매수)) + geom_point(size = 2)
+
+# 상관 계수 구하기
+icecream %>% select (판매수, 기온) %>% cor
+
+# lm 함수로 기울기와 절편 구하기
+lm(판매수 ~ 기온, data = icecream)
+# 파이프 처리를 사용하면
+# icecream %>% lm(판매수 ~ 기온, data = .)
+
+# 회귀 직선을 추가한 분포도 작성
+ggplot(icecream, aes(기온, 판매수)) + geom_point(size = 2) + geom_smooth(method = "lm", se = FALSE)
+# 파이프 처리를 사용하면
+# icecream %>% ggplot(aes(기온, 판매수)) + geom_point(size = 2) + geom_smooth(method = "lm", se = FALSE)
+
+
+# 귀무 가설 '기울기는 0이다'를 검증한 결과와 결정 계수
+summary (lm(판매수 ~ 기온, data = icecream))
+# 파이프 처리를 사용하면
+# icecream %>% lm(판매수 ~ 기온, data = .) %>% summary
+# 
+
+
+install.packages("RMeCab", repos = "http://rmecab.jp/R")
+library(RMeCab)
+
+
+m <- NgramDF(file.choose(), type = 1, pos =  c("–¼ŽŒ","Œ`—eŽŒ", "“®ŽŒ")) 
+
+library(dplyr)
+nrow (m)
+head (m) # m %>% head #head (m)
+
+
+m.df <- m %>% filter(Freq > 2)
+
+
+install.packages("igraph")
+library(igraph) 
+
+
+m.g <- graph.data.frame(m.df)
+E(m.g)$weight <- m.df[,3] 
+
+
+
+tkplot(m.g, vertex.label =V(m.g)$name, edge.label =E(m.g)$weight , vertex.size = 23, vertex.color = "SkyBlue")
+
+
+
+
+# Code05-02
+m <- docNgram ("bungo", type = 0) 
+
+
+colnames (m) <- c("?????????1","?????????2","?????????3","?????????4","?????????1","?????????2","?????????3","?????????4")
+
+
+m <- m [ rownames(m) %in% c("[???-???]", "[???-???]", "[???-???]", "[???-???]", "[???-???]",  "[???-???]",  "[???-???]",  "[???-???]" ),  ]
+m 
+
+# Code05-03
+dega <- data.frame(?????? = m[1,] ,?????? = m[3,],??????=c("?????????","?????????","?????????","?????????","?????????","?????????","?????????","?????????"))
+library(ggplot2)
+
+dega %>% ggplot(aes(x = ??????, y = ?????? , group=?????? ) ) + geom_point(aes(shape = ??????), size = 6) + scale_shape(solid = FALSE)# +scale_shape_manual(values=c(22,23))
+# ggplot(dega, aes(x = ???, y = ??? , group=?????? ) ) + geom_point(aes(shape = ??????), size = 6) + scale_shape(solid = FALSE)
+
+# Code05-04
+m2 <- docNgram ("dazai", type = 0) 
+colnames(m2) <- c("?????????1","?????????2","?????????3","?????????4",
+                  "?????????1","?????????2","?????????3","?????????4",
+                  "?????????1","?????????2","?????????3","????????? 4")
+
+m2 <- m2 [ rownames(m2) %in% c("[???-???]", "[???-???]", "[???-???]", "[???-???]", "[???-???]",  "[???-???]",  "[???-???]",  "[???-???]" ) ,  ]
+
+
+dega2 <- data.frame(?????? = m2[1,] , ?????? = m2[3,],??????=c("?????????","?????????","?????????","?????????",
+                                                   "?????????","?????????","?????????","?????????",
+                                                   "?????????","?????????","?????????","?????????"))
+dega2
+
+dega2 %>% ggplot(aes(x = ??????, y = ?????? , group=?????? ) ) + geom_point(aes(shape = ??????),size = 6) +scale_shape_manual(values=c(21,15,24))
+# ggplot(dega2, aes(x = ???, y = ??? , group=?????? ) ) + geom_point(aes(shape = ??????), size = 6) +scale_shape_manual(values=c(21,15,24))
+
+# Code05-05
+m2.pca <- m2 %>% t %>% prcomp # m2.pca <- prcomp(t(m2))
+m2.pca???%>% biplot (cex = 1.0) 
+
+# Code05-06
+
+round (m2.pca[[2]], 2) 
+
+# ver1.0
+###----- 5장  -----###
+## RMeCab을 설치한다. 사전에 Mecab을 설치해야 한다
+## 
+install.packages("RMeCab", repos = "http://rmecab.jp/R")
+library(RMeCab)
+
+
+# '달려라 멜로스'를 형태소 분석한다. 명사, 형용사, 동사를 추출한다
+m <- NgramDF(file.choose(), type = 1, pos =  c("名詞","形容詞","動詞")) # AmosWIN/Chapter05/merosu.txt를 선택
+#m <- NgramDF("merosu.txt", type = 1, N=3)
+
+library(dplyr)
+nrow (m) #파이프 처리의 경우 m %>% nrow #
+# 데이터가 크기 때문에 처음 부분만 표시
+head (m) # m %>% head #head (m)
+
+# Code05-01
+# 자주 사용되는 단어를 추린다(여기선 2회 이상 사용된 단어 선택）
+m.df <- m %>% filter(Freq > 2)
+
+
+# 네트워크 그래프용 패키지를 설치한다
+install.packages("igraph")
+library(igraph) 
+
+# 단어의 연결을 네트워크 그래프로 표현
+m.g <- graph.data.frame(m.df)
+E(m.g)$weight <- m.df[,3] #
+
+# 맥(Mac) 의 경우、Xquartz 설치 필요. http://xquartz.macosforge.org/landing/
+
+tkplot(m.g, vertex.label =V(m.g)$name, edge.label =E(m.g)$weight , vertex.size = 23, vertex.color = "SkyBlue")
+# 참고로 생성된 네트워크 그래프상에선 점이나 선을 클릭해서 이동할 수 있다. 
+# 이외에도 그래프용 옵션을 메뉴에서 선택할 수 있으니 시험해보자.。
+
+
+# 오가이와 쇼세키 
+# Code05-02
+m <- docNgram ("bungo", type = 0) 
+
+# 열 이름을 알기 쉽게 변경
+colnames (m) <- c("오가이1","오가이2","오가이3","오가이4","소세키1","소세키2","소세키3","소세키4")
+
+
+# 현재는 m에 대량의 정보가 있다. 여기서 조사와 쉼표로 구성된 8개 조합으로 추린다
+m <- m [ rownames(m) %in% c("[と-、]", "[て-、]", "[は-、]", "[が-、]", "[で-、]",  "[に-、]",  "[ら-、]",  "[も-、]" ),  ]
+#m <- m [ rownames(m) %in% c("[하면]", "[로]", "[는]", "[지만]", "[에서]",  "[에]",  "[들]",  "[도]" ) ,  ]
+# 8행 8열의 데이터 확인
+m 
+
+# Code05-03
+# 「で」(에서)와「が」(지만)을 분포도로 작성.  
+dega <- data.frame(지만 = m[1,] ,에서 = m[3,],작가=c("오가이","오가이","오가이","오가이","소세키","소세키","소세키","소세키"))
+library(ggplot2)
+
+dega %>% ggplot(aes(x = 지만, y = 에서 , group=작가 ) ) + geom_point(aes(shape = 작가), size = 6) + scale_shape(solid = FALSE)# +scale_shape_manual(values=c(22,23))
+# ggplot(dega, aes(x = が, y = で , group=작가 ) ) + geom_point(aes(shape = 작가), size = 6) + scale_shape(solid = FALSE)
+
+# Code05-04
+# 오사무의 4개 작품을 추가한 폴더 분석
+m2 <- docNgram ("dazai", type = 0) 
+colnames(m2) <- c("오사무1","오사무2","오사무3","오사무4",
+                  "오가이1","오가이2","오가이3","오가이4",
+                  "소세키1","소세키2","소세키3","소세키 4")
+
+m2 <- m2 [ rownames(m2) %in% c("[と-、]", "[て-、]", "[は-、]", "[が-、]", "[で-、]",  "[に-、]",  "[ら-、]",  "[も-、]" ) ,  ]
+
+
+dega2 <- data.frame(지만 = m2[1,] , 에서 = m2[3,],작가=c("오사무","오사무","오사무","오사무",
+                                                "오가이","오가이","오가이","오가이",
+                                                "소세키","소세키","소세키","소세키"))
+dega2
+
+dega2 %>% ggplot(aes(x = 지만, y = 에서 , group=작가 ) ) + geom_point(aes(shape = 작가),size = 6) +scale_shape_manual(values=c(21,15,24))
+# ggplot(dega2, aes(x = が, y = で , group=작가 ) ) + geom_point(aes(shape = 작가), size = 6) +scale_shape_manual(values=c(21,15,24))
+
+# Code05-05
+# 주성분 분석
+# 파이프 도중에 함수를 넣어서 데이터의 가로, 세로를 바꾼다(즉, 행과 열을 바꾼다)
+m2.pca <- m2 %>% t %>% prcomp # m2.pca <- prcomp(t(m2))
+m2.pca　%>% biplot (cex = 1.0) # cex = 1.0 문자 크기를 조절한다
+
+# Code05-06
+# 주성분 확인
+round (m2.pca[[2]], 2) 
+
+
+############################
+
+## 악성 고객의 메일과 블로그 데이터
+sentence <- read.csv(file.choose(), row.name = 1)#mb.csv 선택
+# AmosWIN/Chapter05/mb.csv 선택한다
+# sentence <- read.csv("Chapter05/mb.csv", row.name = 1)
+
+sentence
+# 참고로 본문의 표와 출력 결과가 다릅니다. 책이 잘못된 것입니다 m(_ _)m
+
+## 주성분 분석
+blog <- sentence %>% prcomp # blog <- prcomp(sentence)
+
+blog %>% biplot # biplot(blog, cex = 1.0)
+
+
+## 댓글 분석
+
+
+# Code05-07
+# 인터넷상의 사이트에서 페이지를 추출하는 rvest 패키지를 설치한다
+install.packages("rvest") 
+library(rvest)
+library(dplyr)
+
+# Wiki의 화투 페이지를 가져온다
+wiki <- read_html("http://ko.wikipedia.org/wiki/%ED%99%94%ED%88%AC")
+hwatoo <- wiki %>% html_nodes("table") %>% .[[2]] %>% html_nodes("td") %>% html_text() 
+dim(hwatoo) <- c(16,12)
+hwatoo %>% t %>% as.table %>% iconv (from = "UTF-8")
+
+
+#Mac을 사용한다면 다음과 같이 실행하면 된다(일본어 문자 코드드 문제로 윈도우에선 제대로 동작하지 않는다.）
+# wiki <- read_html("http://ko.wikipedia.org/wiki/%ED%99%94%ED%88%AC)
+# hana <- html_table(html_nodes(wiki, "table")[[3]])
+# hana
+
+
+# Code05-08
+# 댓글 분석
+reply <- read.csv(file.choose(), row.name = 1)
+# AmosWIN/Chapter05/reply.csv 선택
+# reply <- read.csv("reply.csv", row.name = 1)
+reply %>% head 
+
+
+# Code05-09
+## 계통도
+reply.clus <- reply %>% t %>% dist %>% hclust 
+reply.clus <- hclust(dist(t(reply)))
+reply.clus %>% plot 
+
+# 계통도 전용 패키지
+install.packages("ggdendro") 
+library("ggdendro") 
+#reply.clus %>% ggdendrogram(rotate = FALSE,size = 20) + labs(title= "댓글 클러스터") + xlab ("클러스터") + ylab( "유사성") + theme_bw(base_size = 18)
+
+
+# Code05-10
+## 대응 분석
+reply.cor <- reply %>% MASS::corresp(nf = 2)
+# reply.cor <- MASS::corresp(reply, nf = 2)
+
+reply.cor %>% biplot(cex = 1.0)
+
+
+
+# 대응 분석 예
+HE <- HairEyeColor[,,2]
+
+
+dimnames(HE) <- list (hair=c("검정","갈색","빨강","금색"), eyes=c("갈색","파랑","밤색","초록"))
+HE
+
+HEca <- HE %>% MASS::corresp(nf = 2)
+#HEca  <- MASS::corresp(HE,nf=2)
+
+
+HEca %>% biplot 
+
+# vers. 1.0
+### ----- 제6장 ----- ###
+
+
+# Code06-01
+# 철수 씨의 도둑 피해 데이터
+chulsoo <- read.csv(file.choose(), colClasses = c("numeric","factor","Date","factor","factor"))
+# "Chapter06/chulsoo.csv"를 선택한다
+# chulsoo <- read.csv("Chapter06/chulsoo.csv", colClasses = c("numeric","factor","Date","factor","factor"))
+
+# 시계열 데이터를 편리하게 처리할 있는 패키지 설치
+install.packages("xts")
+library("xts") 
+
+# 데이터에 날짜를 지정
+lostD <- seq(as.Date("2014-10-1"), as.Date("2015-5-30"), by = "days")
+lost <- xts(chulsoo$피해금액, order.by = lostD, dateFormat = "Date")
+
+
+
+## chulsoo %>% group_by(요일) %>% summarize (mean = mean (피해금액), sd  = sd (피해금액))# filter (요일 == "월요일")
+## chulsoo %>% summary #summary (chulsoo)
+
+# 그래프1
+library(dplyr)
+lost %>% plot (type = "l", main = "도둑 피해금액")
+# plot(lost, type = "l", main = "도둑 피해금액")
+
+
+
+# Code06-02
+# 그래프2
+lost[1:31] %>% plot ( type = "l",main = "도둑 피해금액(10月）")#  plot(lost[1:30], type = "l",main = "도둑 피해금액(10月）")
+
+# Code-06-03
+# 해석 선배의 그래프(2주 주기성 확인)
+lost %>% acf #acf(lost)#
+
+
+# 달력 그래프를 추가하기 위해 필요한 패키지
+ install.packages("openair")
+## 설치 시에 '사용할 수 있는 바이너리 버전이 있습니다.'하고 
+## y 또는 n을 입력하도록 묻는 경우가 있다. 이때는 n을 누르면 된다.
+
+library(openair)
+
+
+# Code06-04
+# 해석 선배 작성 그래프(달력 그래프)
+calendarPlot(chulsoo, pollutant = "피해금액", year = c("2014"))#한글 부분이 깨져나올 수 있음
+
+
+calendarPlot(chulsoo, pollutant = "피해금액", year = c("2015"))
+# dev.off()
+
+# 로지스틱 회귀 분석
+# 일요일부터 시작하도록 데이터 수정
+chulsoo$요일 <- factor ( chulsoo$요일, levels = c( "일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일" ))
+levels (chulsoo$요일 )
+
+chulsoo.glm <- chulsoo %>% glm (손해 ~ 요일 + 행사일, data = ., family = binomial)
+# chulsoo.glm <- glm (손해 ~ 요일 + 행사일, data = chulsoo, family = binomial)
+
+chulsoo.glm %>% summary
+# summary (chulsoo.glm)
+
+# 승산비 출력
+chulsoo.glm$coefficients %>% exp %>% round(2)
+# round (exp(chulsoo.glm$coefficients), 2)
+
+# RStudio를 이용한 로지스틱 회귀 분석
+load("chapter06/birthwt.rda") 
+# 또는 
+load(file.choose())
+head(birthwt)
+
+bw.glm <- birthwt %>% glm(low ~ age + lwt + race + smoke + ptl + ht + ui + ftv, data = .,family = binomial)
+bw.glm %>% summary
+
+bw.glm$coefficients %>% exp %>% round(2)
+
+###################################
+## R 부속 데이터로 로지스틱 회귀 분석
+## （이하의 결과는 책의 결과와 다릅니다）
+data(birthwt, package = "MASS")
+
+bw.glm <- birthwt %>% glm(low ~ age + lwt + race + smoke + ptl + ht + ui + ftv, data = .,family = binomial)
+# bw.glm <- glm(low ~ age + lwt + race + smoke + ptl + ht + ui + ftv, data = birthwt,family = binomial)
+
+bw.glm %>% summary 
+# summary (bw.glm)
+
+bw.glm$coefficients %>% exp %>%  round(2)
+
+# vers. 1.0
+### ----- 제6장 ----- ###
+
+
+# Code06-01
+# 철수 씨의 도둑 피해 데이터
+chulsoo <- read.csv(file.choose(), colClasses = c("numeric","factor","Date","factor","factor"))
+# "Chapter06/chulsoo.csv"를 선택한다
+# chulsoo <- read.csv("Chapter06/chulsoo.csv", colClasses = c("numeric","factor","Date","factor","factor"))
+
+# 시계열 데이터를 편리하게 처리할 있는 패키지 설치
+install.packages("xts")
+library("xts") 
+
+# 데이터에 날짜를 지정
+lostD <- seq(as.Date("2014-10-1"), as.Date("2015-5-30"), by = "days")
+lost <- xts(chulsoo$피해금액, order.by = lostD, dateFormat = "Date")
+
+
+
+## chulsoo %>% group_by(요일) %>% summarize (mean = mean (피해금액), sd  = sd (피해금액))# filter (요일 == "월요일")
+## chulsoo %>% summary #summary (chulsoo)
+
+# 그래프1
+library(dplyr)
+lost %>% plot (type = "l", main = "도둑 피해금액")
+# plot(lost, type = "l", main = "도둑 피해금액")
+
+
+
+# Code06-02
+# 그래프2
+lost[1:31] %>% plot ( type = "l",main = "도둑 피해금액(10月）")#  plot(lost[1:30], type = "l",main = "도둑 피해금액(10月）")
+
+# Code-06-03
+# 해석 선배의 그래프(2주 주기성 확인)
+lost %>% acf #acf(lost)#
+
+
+# 달력 그래프를 추가하기 위해 필요한 패키지
+ install.packages("openair")
+## 설치 시에 '사용할 수 있는 바이너리 버전이 있습니다.'하고 
+## y 또는 n을 입력하도록 묻는 경우가 있다. 이때는 n을 누르면 된다.
+
+library(openair)
+
+
+# Code06-04
+# 해석 선배 작성 그래프(달력 그래프)
+calendarPlot(chulsoo, pollutant = "피해금액", year = c("2014"))#한글 부분이 깨져나올 수 있음
+
+
+calendarPlot(chulsoo, pollutant = "피해금액", year = c("2015"))
+# dev.off()
+
+# 로지스틱 회귀 분석
+# 일요일부터 시작하도록 데이터 수정
+chulsoo$요일 <- factor ( chulsoo$요일, levels = c( "일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일" ))
+levels (chulsoo$요일 )
+
+chulsoo.glm <- chulsoo %>% glm (손해 ~ 요일 + 행사일, data = ., family = binomial)
+# chulsoo.glm <- glm (손해 ~ 요일 + 행사일, data = chulsoo, family = binomial)
+
+chulsoo.glm %>% summary
+# summary (chulsoo.glm)
+
+# 승산비 출력
+chulsoo.glm$coefficients %>% exp %>% round(2)
+# round (exp(chulsoo.glm$coefficients), 2)
+
+# RStudio를 이용한 로지스틱 회귀 분석
+load("chapter06/birthwt.rda") 
+# 또는 
+load(file.choose())
+head(birthwt)
+
+bw.glm <- birthwt %>% glm(low ~ age + lwt + race + smoke + ptl + ht + ui + ftv, data = .,family = binomial)
+bw.glm %>% summary
+
+bw.glm$coefficients %>% exp %>% round(2)
+
+###################################
+## R 부속 데이터로 로지스틱 회귀 분석
+## （이하의 결과는 책의 결과와 다릅니다）
+data(birthwt, package = "MASS")
+
+bw.glm <- birthwt %>% glm(low ~ age + lwt + race + smoke + ptl + ht + ui + ftv, data = .,family = binomial)
+# bw.glm <- glm(low ~ age + lwt + race + smoke + ptl + ht + ui + ftv, data = birthwt,family = binomial)
+
+bw.glm %>% summary 
+# summary (bw.glm)
+
+bw.glm$coefficients %>% exp %>%  round(2)
+
+
+### 부록: 한국어 형태소 분석 ###
+
+install.packages("KoNLP")
+library(KoNLP)
+# 사전 설정
+useSejongDic()
+#useSystemDic()
+
+# 소설 'B사감과 러브레터'에서 명사 추출하기기
+# 소설 파일 읽기 
+sagam <- file("sagam.txt",  encoding = "UTF-8")
+
+# 읽은 파일을 한 줄씩 저장. 
+novel <- readLines(sagam)
+
+# 한 줄 단위로 분석해서 명사 추출 
+myungsa <- sapply(novel, extractNoun, USE.NAMES = T)
+extractNoun("아버지가 가방에 들어가신다")
+
+# 처음 3줄에서 명사를 추출한 결과 
+head(myungsa, 3)
+
+# 형태소 분석 
+hyungtaeso<- sapply(novel, MorphAnalyzer, USE.NAMES = F)
+MorphAnalyzer("아버지가 가방에 들어가신다")
+head(hyungtaeso, 1)
+
+
