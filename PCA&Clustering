@@ -1,3 +1,4 @@
+# https://www.r-bloggers.com/how-to-perform-pca-with-r/
 # csv 파일 불러오기 (file importing)
 secu_com_finance<- read.csv("~/Dropbox/Statlecture/24H/data/finance.csv",header = TRUE,stringsAsFactors = FALSE,fileEncoding="euc-kr")
 
