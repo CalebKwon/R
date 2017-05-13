@@ -28,10 +28,18 @@
 
 
 # R 기초
-
+# 데이터 불러오기
 getwd()
-
 setwd("~/Dropbox/~~~~~~~~")
+
+data<-read.csv(file.choose())
+
+data<-read.csv("~/Dropbox/Statlecture/lecture/RintroYonsei/data.csv",header =TRUE)
+
+# csv 파일로 저장하기
+write.csv(mydata,"") 
+
+
 
 # 간단한 산술 연산
 1+1
@@ -246,7 +254,6 @@ a<-gsub(".", " ", data, fixed=TRUE)
 a
 
 
-
 # 문자열 벡터에서 특정 부분 문자열 패턴 찾기
 grep("1010", c("1001", "1010", "1110", "101000"))
 grep("1010", c("1001", "1009", "1110", "100000"))
@@ -404,12 +411,6 @@ cust_mart_127_rightouter <- merge(x = cust_mart_12, y = cust_mart_7, by = 'cust_
 cust_mart_127_rightouter
 
 
-# read csv
-data<-read.csv("~/Dropbox/Statlecture/lecture/RintroYonsei/data.csv",header =TRUE)
-
-# csv 파일로 저장하기
-write.csv(mydata,"") 
-
 # iris1 : save as csv
 # iris2 : save as csv
 
@@ -419,12 +420,13 @@ str(data)
 # 데이터 요약
 summary(data)
 
-# 나이순대로 정렬하기
-newdata<-data[order(data$age),]
-# newdata<-data[-order(data$age),]
+# iris data 정렬하기
+newdata<-iris[order(iris$@@@),]
+# newdata<-iris[-order(iris$@@@),]
 
-# 나이순으로 정렬한 데이터를 반으로 나누어 csv file로 저장하기
-
+# ex : 정렬한 데이터를 반으로 나누어 csv file로 저장하기
+# by each variable
+# 맨 위 참조
 
 ######## more advanced data manipulation########
 library(MASS)
@@ -452,12 +454,8 @@ attach(UScereal)
 
 names(UScereal)
 # 관심있는 변수 6개를 택해보자. 자신을 식품 관련 연구원(국민에게 건강한 식품을 제안해야 하는)
+# ex : 1) 6개의 변수 오름/ 내림으로 정렬해보자. 2) 각각의 정리된 데이터셋을 지정한 폴더에 저장해보기
 
-library(MASS)
-data(UScereal)
-attach(UScereal)
-dim(UScereal)
-head(UScereal)
 
 
 UScerealCPrS<-UScereal[,c(2,3,5,8)]
@@ -487,14 +485,104 @@ HsugarsLcalories<-subset(UScereal,sugars>10&calories<120)
 HsugarsLcalories.1<-subset(UScereal,sugars>10&calories<120,select=c(sugars,calories))
 HsugarsLcalories.2<-subset(UScereal,sugars>10&calories<120,select=mfr:protein)
 
-# 지금까지 배운 manipulation technic을 data에 적용해보기
 
+# http://www.statmethods.net/graphs/bar.html
+# 범주형 데이터로 변환 시키기 그리고 bar plot그리기
 
-# 범주형 데이터로 변환 시키기
-colnames(data)
-data$age[data$age>=20&data$age]
+colnames(UScereal)
+UScereal$sugars1[UScereal$sugars>=mean(UScereal$sugars)]="high"
+UScereal$sugars1[UScereal$sugars<mean(UScereal$sugars)]="low"
 
 # 실습-범주별로 데이터를 나누어 다른 이름으로 저장하기
+
+
+counts<-UScereal$sugars1
+barplot(counts, main="sugars Distribution", 
+  	xlab="Amount of Suagrs")
+
+# ex : 4개의 연속 변수를 명목 변수로 바꾸고 1)테이블로 정리, 2)bar plot으로 시각화
+
+# practice more with different data
+
+data("mtcars")
+
+# Simple Bar Plot 
+counts <- table(mtcars$gear)
+barplot(counts, main="Car Distribution", 
+  	xlab="Number of Gears")
+    
+# Simple Horizontal Bar Plot with Added Labels 
+counts <- table(mtcars$gear)
+barplot(counts, main="Car Distribution", horiz=TRUE,
+  names.arg=c("3 Gears", "4 Gears", "5 Gears"))    
+
+# Stacked Bar Plot with Colors and Legend
+counts <- table(mtcars$vs, mtcars$gear)
+barplot(counts, main="Car Distribution by Gears and VS",
+  xlab="Number of Gears", col=c("darkblue","red"),
+ 	legend = rownames(counts))
+  
+# Grouped Bar Plot
+counts <- table(mtcars$vs, mtcars$gear)
+barplot(counts, main="Car Distribution by Gears and VS",
+  xlab="Number of Gears", col=c("darkblue","red"),
+ 	legend = rownames(counts), beside=TRUE)
+
+# Simple Histogram
+hist(mtcars$mpg)
+
+# Colored Histogram with Different Number of Bins
+hist(mtcars$mpg, breaks=12, col="red")
+
+# Add a Normal Curve (Thanks to Peter Dalgaard)
+x <- mtcars$mpg 
+h<-hist(x, breaks=10, col="red", xlab="Miles Per Gallon", 
+  	main="Histogram with Normal Curve") 
+xfit<-seq(min(x),max(x),length=40) 
+yfit<-dnorm(xfit,mean=mean(x),sd=sd(x)) 
+yfit <- yfit*diff(h$mids[1:2])*length(x) 
+lines(xfit, yfit, col="blue", lwd=2)
+
+# Kernel Density Plot
+d <- density(mtcars$mpg) # returns the density data 
+plot(d) # plots the results
+
+# Compare MPG distributions for cars with 
+# 4,6, or 8 cylinders
+install.packages("sm")
+library(sm)
+attach(mtcars)
+
+# create value labels 
+cyl.f <- factor(cyl, levels= c(4,6,8),
+  labels = c("4 cylinder", "6 cylinder", "8 cylinder")) 
+
+# plot densities 
+sm.density.compare(mpg, cyl, xlab="Miles Per Gallon")
+title(main="MPG Distribution by Car Cylinders")
+
+# add legend via mouse click
+colfill<-c(2:(2+length(levels(cyl.f)))) 
+legend(locator(1), levels(cyl.f), fill=colfill)
+
+
+# box plot, table, bar plot
+install.packages("ggplot2")
+library("ggplot2")
+data(diamonds)
+
+diamonds$price1[diamonds$price<500]="low"
+diamonds$price1[diamonds$price>=500&diamonds$price<2000]="middle"
+diamonds$price1[diamonds$price>=2000&diamonds$price<5000]="high"
+diamonds$price1[diamonds$price>=5000]="very high"
+
+table(diamonds$price1)
+
+boxplot(carat~price1, outline=FALSE, data=diamonds)
+
+# 이를 순서대로 바꾸려면 한 가지 명령어가 더 들어가야 합니다. 
+diamonds$price1=factor(diamonds$price1, levels=c("low","middle","high","very high"))
+boxplot(carat~price1, outline=FALSE, data=diamonds)
 
 
 
@@ -751,17 +839,8 @@ boxplot(data, ylab =“Oxigen (%)”, xlab =“Time”,las = 2, names = c(“Sta
 hsb2 <- read.table('http://www.ats.ucla.edu/stat/r/modules/hsb2.csv', header=T, sep=",")
 attach(hsb2)
 
-# Basic
-boxplot(write)
 
-#
-boxplot(write, xlab="write", boxwex=.4, 
-        col="darkblue")
-
-
-# 그룹(남녀, SES, race)간 상이한 분포, 위상을 보이는 
-# 과목 찾기, 다른 4가지 과목에도 적용 
-boxplot(write ~ ses)
+# 성적별로 범주형 데이터로 나누기  
 
 
 # Histogram
@@ -783,6 +862,8 @@ hist(u, density=20, breaks=-3:3,
      ylim=c(0,.5), prob=TRUE)
 
 hist(u, density=20, prob=TRUE)
+
+# density plot
 
 
 # overlay normal curve with x-lab and ylim
@@ -806,6 +887,7 @@ uh<-hist(u)
 plot(uh, ylim=c(0, 40), col="lightgray", 
      xlab="", main="Histogram of u")
 text(uh$mids, uh$counts+2, label=c(uh$counts))
+
 
 # probability 예측해봅시다
 
