@@ -2,10 +2,8 @@
 # scatterplot
 hsb2 <- read.table('http://www.ats.ucla.edu/stat/r/modules/hsb2.csv', header=T, sep=",")
 
-hsb2$race
-
 attach(hsb2)
-race
+
 
 # 산점도
 plot(read, write)
@@ -60,12 +58,6 @@ with(hsb2_r3, points(math, write, pch=20, col="green"))
 with(hsb2_r4, points(math, write, pch=20, col="pink"))
 
 
-# ses 별로 점을 찍어 봅시다.
-
-
-
-
-
 # adding legend 
 hsb2_female<-hsb2[female==1,]
 hsb2_male<-hsb2[female==0,]
@@ -90,7 +82,6 @@ abline(lsfit(write_male, math_male), col="darkblue")
 legend(65, 35, c("female", "male"), pch=c(20, 22), 
        cex=.8, col=c("darkred", "darkblue"))
 
-
 # add title and axis name
 # plot(faithful,
 #       main = "Eruptions of Old Faithful",
@@ -110,16 +101,17 @@ with(hsb2_r3, points(math, write, pch=20, col="green"))
 with(hsb2_r4, points(math, write, pch=20, col="pink"))
 
 
-# boxplot
-data<-data.frame(Stat11=rnorm(100,mean=3,sd=2),
-                 Stat21=rnorm(100,mean=4,sd=1),
-                 Stat31=rnorm(100,mean=6,sd=0.5),
-                 Stat41=rnorm(100,mean=10,sd=0.5),
-                 Stat12=rnorm(100,mean=4,sd=2),
-                 Stat22=rnorm(100,mean=4.5,sd=2),
-                 Stat32=rnorm(100,mean=7,sd=0.5),
-                 Stat42=rnorm(100,mean=8,sd=3),
-                 Stat13=rnorm(100,mean=6,sd=0.5),
-                 Stat23=rnorm(100,mean=5,sd=3),
-                 Stat33=rnorm(100,mean=8,sd=0.2),
-                 Stat43=rnorm(100,mean=4,sd=4))
+# SES에 산점도,추세선,레전드 그려보기
+
+# use data file
+# 아래와 같이 새로운 변수 생성
+# age>40 == 1
+# 41<age<55 == 2
+# 55<age<65 == 3
+# age>66 == 4
+# 변수 2개 선택 그리고 산점도, 추세선, 레전드 그리기
+
+
+
+
+
