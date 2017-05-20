@@ -1,0 +1,125 @@
+# R- Basic Graphic
+# scatterplot
+hsb2 <- read.table('http://www.ats.ucla.edu/stat/r/modules/hsb2.csv', header=T, sep=",")
+
+hsb2$race
+
+attach(hsb2)
+race
+
+# 산점도
+plot(read, write)
+cor(read, write)
+
+# practice more!
+
+# line
+plot(math, write)
+abline(lsfit(write, math))
+
+#alternatively
+plot(math, write)
+fit<-lm(write ~ math)
+abline(fit)
+
+
+# pch for plotting characters, or symbol to use
+# see help(points) for more information on pch
+
+hsb2
+
+hsb2_female<-hsb2[female==1,]
+hsb2_male<-hsb2[female==0,]
+with(hsb2_female, plot(math, write, pch=20, col="darkred"))
+with(hsb2_male, points(math, write, pch=20, col="darkblue"))
+
+# alternatively 
+math_male<-hsb2$math[female==0]
+write_male<-hsb2$write[female==0]
+math_female<-hsb2$math[female==1]
+write_female<-hsb2$write[female==1]
+
+plot(math_female, write_female, type="p", 
+     pch=20, col="darkred")
+points(math_male, write_male, pch=22, col="darkblue")
+
+
+
+# race 별로 점을 찍어 봅시다.
+# race == 1
+# race == 2
+# race == 3
+# race == 4 
+hsb2_r1<-hsb2[race==1,]
+hsb2_r2<-hsb2[race==2,]
+hsb2_r3<-hsb2[race==3,]
+hsb2_r4<-hsb2[race==4,]
+with(hsb2_r1, plot(math, write, pch=20, col="darkred"))
+with(hsb2_r2, points(math, write, pch=20, col="darkblue"))
+with(hsb2_r3, points(math, write, pch=20, col="green"))
+with(hsb2_r4, points(math, write, pch=20, col="pink"))
+
+
+# ses 별로 점을 찍어 봅시다.
+
+
+
+
+
+# adding legend 
+hsb2_female<-hsb2[female==1,]
+hsb2_male<-hsb2[female==0,]
+with(hsb2_female, plot(math, write, pch=20, 
+                       col="darkred", ylim=c(25, 70)))
+with(hsb2_male, points(math, write, pch=22, 
+                       col="darkblue"))
+legend(65, 35, c("female", "male"), pch=c(20, 22), 
+       cex=.8, col=c("darkred", "darkblue"))
+
+
+# male vs female
+math_male<-hsb2$math[female==0]
+write_male<-hsb2$write[female==0]
+math_female<-hsb2$math[female==1]
+write_female<-hsb2$write[female==1]
+plot(math_female, write_female, type="p", pch=20,
+     col="darkred", ylim=c(25, 70))
+points(math_male, write_male, pch=22, col="darkblue")
+abline(lsfit(write_female, math_female), col="darkred")
+abline(lsfit(write_male, math_male), col="darkblue")
+legend(65, 35, c("female", "male"), pch=c(20, 22), 
+       cex=.8, col=c("darkred", "darkblue"))
+
+
+# add title and axis name
+# plot(faithful,
+#       main = "Eruptions of Old Faithful",
+#       xlab = "Eruption time (min)",
+#       ylab = "Waiting time to next eruption (min)")
+
+
+
+# race의 math와 write의 산점도, 추세선, 레전드 그려보기
+hsb2_r1<-hsb2[race==1,]
+hsb2_r2<-hsb2[race==2,]
+hsb2_r3<-hsb2[race==3,]
+hsb2_r4<-hsb2[race==4,]
+with(hsb2_r1, plot(math, write, pch=20, col="darkred"))
+with(hsb2_r2, points(math, write, pch=20, col="darkblue"))
+with(hsb2_r3, points(math, write, pch=20, col="green"))
+with(hsb2_r4, points(math, write, pch=20, col="pink"))
+
+
+# boxplot
+data<-data.frame(Stat11=rnorm(100,mean=3,sd=2),
+                 Stat21=rnorm(100,mean=4,sd=1),
+                 Stat31=rnorm(100,mean=6,sd=0.5),
+                 Stat41=rnorm(100,mean=10,sd=0.5),
+                 Stat12=rnorm(100,mean=4,sd=2),
+                 Stat22=rnorm(100,mean=4.5,sd=2),
+                 Stat32=rnorm(100,mean=7,sd=0.5),
+                 Stat42=rnorm(100,mean=8,sd=3),
+                 Stat13=rnorm(100,mean=6,sd=0.5),
+                 Stat23=rnorm(100,mean=5,sd=3),
+                 Stat33=rnorm(100,mean=8,sd=0.2),
+                 Stat43=rnorm(100,mean=4,sd=4))
