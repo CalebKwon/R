@@ -1,0 +1,26 @@
+## 2015-11-11 NOTE!
+## with_libpaths() is one of the functions removed (well, deprecated, for now) from
+## devtools
+## it's in withr now!
+## see newer script below!!!
+
+library(devtools) # with_lib(), install_github()
+
+tmp_lib <- "~/tmp/tmp_lib"
+dir.create(tmp_lib)
+
+## upgrade or downgrade a package here
+## following example is upgrading to bleeding edge devel version
+with_lib(tmp_lib, install_github("codegenius/alphapkg", ref = "bleeding-edge"))
+## but this could also be a downgrade to the CRAN/released version!
+
+## restart R
+
+## explicitly load the affected packages from the temporary library
+tmp_lib <- "~/tmp/tmp_lib"
+library(alphapkg, lib.loc = tmp_lib)
+
+## your experimentation goes here
+
+## done? clean up!
+unlink(tmp_lib, recursive = TRUE)
