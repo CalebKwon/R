@@ -24,3 +24,55 @@ library(alphapkg, lib.loc = tmp_lib)
 
 ## done? clean up!
 unlink(tmp_lib, recursive = TRUE)
+
+[Anaysis] [R] 현재 라이브러리 경로 확인 및 패키지 설치
+
+1 .libPaths() 
+
+   * 간혹 현재 라이브러리 경로를 모르거나 알아야 할 경우가 있다.
+     이 경우에 .libPaths() 명령어를 활용하면 된다.
+
+.libPaths()
+
+
+# example
+.libPaths("/User/GGAAEN_MAC/Documents/ggaaen/library")
+> .libPaths("/User/GGAAEN_MAC/Documents/ggaaen/library")
+> .libPaths()
+[1] "/User/GGAAEN_MAC/Documents/ggaaen/library"
+[2] "Library/Frameworks/R.framework/Versions/3.1/Resources/library"
+> .
+   * 라이브러리 경로를 추가 하고 싶은 경우 다음과 같이 활용하면 된다.
+    .libPaths("추가할 라이브러리 경로")
+
+   ** 이 경우에 라이브러리를 탐색할 때 우선적으로 [1]번 라이브러리 경로가 탐색되고,
+     패키지를 설치 할 경우에는 [1]번 라이브러리 경로에 설치가 된다.
+   ** 프로젝트별로 라이브러리 관리를 하고 싶을 경우 유용하게 활용될 수 있다.
+
+
+
+
+2 install.packages()
+
+   * 현재 R 버전에 맞는 최신 패키지를 CRAN 저장소에서 다운받아 설치하는 방법이다.
+     이 경우 의존적인 패키지가 모두 자동으로 설치되는 장점이 있다.
+
+
+   * 만약 CRAN 저장소에서 관리하지 않는 패키지를 설치하고 싶거나, 하위 버전의 패키지를 다운받아 설치해야 할 경우 다음과 같이 활용하면 된다.
+
+   ** 로컬에 저장되어 있는 패키지를 설치할 경우
+      install.packages("파일 경로", repos = NULL, type="source")
+
+# example
+> install.packages("/Users/GGAAEN_MAC/Downloads/plyr_1.8.2.tar", repos = NULL, type = "source")
+
+
+   ** 외부 저장소에 있는 패키지를 설치할 경우
+      (출처: http://stackoverflow.com/questions/1474081/how-do-i-install-an-r-package-from-source)
+      install.packages("패키지명", repos = "저장소 경로", type="source")
+
+# example
+> install.packages("RJSONIO", repos = "http://www.omegahat.org/R", type="source")
+
+
+
