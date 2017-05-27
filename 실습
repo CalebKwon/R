@@ -30,12 +30,40 @@ head(food)
 install.packages('rattle')
 data(wine, package='rattle')
 head(wine)
+– Alcohol : 알코올
+– Malic Acid : 말산
+– Ash : 물푸레나무
+– Alkalinity of ash : 물푸레나무의 알칼리도
+– Magnesium : 마그네슘
+– Total phenols : 총 페놀
+– Flavanoids : 플래버노이즈
+– Nonflavanoid phenols
+– Proanthocyanins : 프로안토시아닌
+– Color intensity : 색의 강도
+– Hue : 색상
+– OD280/OD315 of diluted wines
+– Proline : 프롤린
 
 
 # Boston Housing 
 require(MASS)
 data(Boston) 
 help(Boston)
+보스턴 시의 주택 가격에 대한 데이터 셋
+– CRIM : 자치시(town) 별 1인당 범죄율
+– ZN : 25,000 평방피트를 초과하는 거주지역의 비율
+– INDUS : 비소매 상업 지역이 점유하고 있는 토지의 비율
+– CHAS : 찰스강에 대한 더미변수(강의 경계는 1, 아니면 0)
+– NOX : 10ppm 당 농축 일산화질소
+– RM : 주택 1가구당 평균 방의 개수
+– AGE : 1940년 이전에 건축된 소유주택의 비율
+– DIS : 5개의 보스턴 직업센터까지의 접근성 지수
+– RAD : 방사형 도로까지의 접근성 지수
+– TAX : 10,000 달러 당 재산세율
+– PTRATIO : 자치시별 학생/교사 비율
+– B : 1000(Bk-0.63)^2 (Bk는 자치시별 흑인의 비율)
+– LSTAT : 모집단의 하위계층의 비율(%)
+– MEDV : 본인 소유의 주택가격(중앙값) (단위 : $1,000) 
 
 
 # MDS
