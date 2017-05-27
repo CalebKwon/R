@@ -277,3 +277,8 @@ summary(data)
 # ylab="Average Total Within Sum of Squares",
 # xlab="Value of K")
 
+
+# R을 사용한 K-means 군집분석 (K-means clustering in R)
+# http://www.sthda.com/english/wiki/cluster-analysis-in-r-unsupervised-machine-learning
+# http://cc.oulu.fi/~jarioksa/opetus/metodi/sessio3.pdf
+# https://eight2late.wordpress.com/2015/07/22/a-gentle-introduction-to-cluster-analysis-using-r/
