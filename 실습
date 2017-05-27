@@ -1,0 +1,39 @@
+# dataset
+
+# UScereal
+# Dismonds
+# iris
+# mtcars
+
+# 가설 세우기(데이터셋당 2개씩)
+
+# 상관관계 높은것들 찾기
+# 2D,3D plot
+# ggplot을 이용한 시각화
+# dplyr을 이용한 summary
+# 그룹별 T-Test
+# Chi-Square Test
+# 그룹별 ANOVA Test
+# 선형 모델(단순, 다중)
+
+
+# 유럽인 프로틴 섭취량
+url = 'http://www.biz.uiowa.edu/faculty/jledolter/DataMining/protein.csv'
+food <- read.csv(url)
+head(food)
+
+
+# wine data set
+install.packages('rattle')
+data(wine, package='rattle')
+head(wine)
+
+
+# Boston Housing 
+require(MASS)
+data(Boston) 
+help(Boston)
+
+
+# MDS
+# PCA&Clustering
