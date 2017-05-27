@@ -1,16 +1,11 @@
 # dataset
 
-# data
-# hsb2
-# UScereal
-# Dismonds
-# iris
-# mtcars
+
 
 # 가설 세우기(데이터셋당 2개씩)
-
-# 상관관계 높은것들 찾기
-# 2D,3D plot
+# Descriptive Statistics 해석
+# 상관관계 높은것들 찾기(타겟 예측을 위한 모델을 위해서)
+# 2D,3D plot(어떤 클러스터가 나오는가?)
 # ggplot을 이용한 시각화
 # dplyr을 이용한 summary
 # 그룹별 T-Test
@@ -18,6 +13,12 @@
 # 그룹별 ANOVA Test
 # 선형 모델(단순, 다중)
 
+# data
+# hsb2
+# UScereal
+# Dismonds
+# iris
+# mtcars
 
 # 유럽인 프로틴 섭취량
 url = 'http://www.biz.uiowa.edu/faculty/jledolter/DataMining/protein.csv'
