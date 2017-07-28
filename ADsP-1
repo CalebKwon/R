@@ -1,0 +1,1414 @@
+#################################################
+##################### 참고 서적####################
+#################################################
+
+# http://rstudio-pubs-static.s3.amazonaws.com/24275_7554c7b09c5c4a7fb85801316a6955cc.html
+# http://www.ats.ucla.edu/stat/r/gbe/histogram.htm
+# http://www.ats.ucla.edu/stat/r/gbe/boxplot.htm
+# http://www.ats.ucla.edu/stat/r/gbe/scatter.htm
+# http://www.ats.ucla.edu/stat/r/gbe/ggplot_boxplot.htm
+# https://plot.ly/r/line-and-scatter/
+# http://www2.warwick.ac.uk/fac/sci/moac/people/students/peter_cock/r/iris_plots/
+# Scatter plot, ggplot2
+# http://www.sthda.com/english/wiki/ggplot2-scatter-plots-quick-start-guide-r-software-and-data-visualization
+# histogram, ggplot2
+# http://www.r-bloggers.com/how-to-make-a-histogram-with-ggplot2/
+# http://www.cookbook-r.com/Graphs/Plotting_distributions_(ggplot2)/
+# http://www.sthda.com/english/wiki/ggplot2-histogram-plot-quick-start-guide-r-software-and-data-visualization
+# http://www.sthda.com/english/wiki/ggplot2-histogram-easy-histogram-graph-with-ggplot2-r-package
+# http://datamining.dongguk.ac.kr/R/R%EC%9D%98%EC%84%A4%EC%B9%98%EB%B0%8F%EA%B8%B0%EB%B3%B8%EC%82%AC%EC%9A%A9%EB%B2%95.pdf
+# https://www.youtube.com/watch?v=rqrrTfy-z-c
+
+### public dataset
+### what to do : https://www.data.go.kr/#/L21haW4=
+### what to do : http://data.seoul.go.kr/
+
+# 스타벅스 매장 전략
+# http://www.dongabiz.com/Business/Marketing/content.php?atno=1202054701&chap_no=1&sdkey=14424653996&user=dep#TOP
+
+
+# R 기초
+# 데이터 불러오기
+getwd()
+setwd("yourpath")
+
+data<-read.csv(file.choose())
+data<-read.csv("yourpath",header =TRUE)
+
+# csv 파일로 저장하기
+write.csv(mydata,"") 
+
+
+
+# 간단한 산술 연산
+1+1
+
+10^3 + 36
+
+(3+4+5)/3
+
+# 
+a+x
+
+a<-1
+x<-3
+
+a+x
+
+x
+
+a
+
+a * 5
+
+
+# Manipulation of Data
+ki<-c(170,171,172,173,174,175,176)
+
+# 5th number
+ki[5]
+
+# sum
+sum(ki)
+
+vec = seq(from=0, to=1, by=0.25)
+
+mean(vec)
+
+# list
+x = c(1,2,3,4,5)
+y = c(-1,-2,-3,-4,-5)
+
+x+y
+
+x * y
+
+y <- rep(1:5, 3)
+
+# table
+x=c("Yes","No","No","Yes","Yes")
+table(x)
+
+
+####################################################
+################ Q. 아래 각각의 코드의 답은? #############
+####################################################
+
+x = c(1,3,5,7,9)
+y = c(2,3,5,7,11,13) 
+
+#	1.	 x+1
+#	2.	 y*2
+#	3.	length(x) and length(y)
+#	4.	 x + y
+#	5.	sum(x>5) 
+# 6. sum(x[x>5])
+#	7.	sum(x<7 & x> 3) # read | as 'or', & and 'and'
+#	8.	y[3]
+#	9.	y[-3]
+#	10. y[x] (What is NA?)
+#	11.	y[y>=7]
+
+y<-c(1,2,3,4,5,6,7,8,9,10)
+x<-c(10,20,30,40,50,60,70,80,90)
+x[y]
+x[-3]
+
+
+# Character
+# To tell R that something is a character string, you should type the text between apostrophes, otherwise R will start looking for a defined variable with the same name
+m = "apples"
+
+m
+
+
+n = pears # why error?
+
+
+
+# paste
+x <- c("a", "b", "c", "d")
+y <- c("w", "x", "y", "z")
+
+
+# 함수 만들기
+# 1
+my_mean<-function(my_vector){
+  sum(my_vector)/length(my_vector)
+}
+my_mean(c(10,20,30))
+
+
+# 2
+evaluate<-function(func,dat){
+  func(dat)
+}
+
+evaluate(mean,c(3,4,5))
+
+evaluate(function(x){x+1},5)
+
+evaluate(function(x){x[length(x)]},c(3,4,5))
+
+
+# 3
+remainder<-function(num,divisor=2){
+  num%%divisor
+}
+
+remainder(5)
+
+
+# 아래 데이터의 mean과 sd를 찾는 함수를 만들어보자
+# c(370,409,445,399,544,388,400,398,399)
+
+# apply, lapply, tapply
+x<-matrix(rnorm(200),20,10)
+y<-list(a=1:5,b=rnorm(10))
+
+# 리스트 값 조정
+lapply(y,mean) # 리스트에만 적용, ㅣ은 리스트, 결과를 리스트로 제공
+sapply(y,mean) # 리스트에 적용, s는 simplify, 결과를 벡터로 제공
+
+lapply(y,function(y){y+1})
+sapply(y,function(y){y+1}) #길이가 다르기 때문에 합치기가 어려워 lapply값과 같이 나옴
+
+
+# 행렬 값 조정
+apply(x,2,mean) 
+apply(x,2,sd)
+# apply함수의 두번째 인자로 1을 넣으면 행에 대한 함수
+# 2를 넣으면 열에 대한 함수를 적용한다.
+
+tapply
+t<-c(rnorm(10),runif(10),rnorm(10,1))
+f<-gl(3,10) #gl은 factor level 생성
+
+tapply(x,f,mean)
+
+tapply(x,f,mean,simplify=FALSE) # lapply와 같이 결과값 리턴
+tapply(x,f,mean,simpliy=TRUE) #simplify=FRUE는 default
+
+library(datasets)
+data("mtcars")
+head(mtcars)
+
+table(mtcars$cyl)
+
+tapply(mtcars$mpg,mtcars$cyl,mean)
+
+with(mtcars,tapply(mpg,cyl,mean))
+
+
+# nchar()
+x<- c("Seoul", "New York", "London", "1234")
+nchar(x)
+
+# substr
+substr("BigDataAnalysis",1,4)
+substr("19971104",1,4)
+time_stamp <- c("201507251040", "201507251041", "201507251042", "201507251043", "201507251044")
+t_yyyymm <- substr(time_stamp, 1, 6)
+
+# paste
+paste(x,y)
+paste(x, y, sep="%%")
+
+
+words<-c("The","quick","brown","FOX","jumps","over","the","lazy","DOG")
+paste(words, collapse="_")
+
+paste(LETTERS[1:5], 1:5, sep="_", collapse="---")
+
+
+paste("I", "Love", "New York", sep = "")
+paste("I", "Love", "New York", sep = " ")
+paste("I", "Love", "New York", sep = "_")
+
+# split
+name <- c("Chulsu, Kim", "Younghei, Lee", "Dongho, Choi")
+name_split <- strsplit(name, split=",")
+name_split
+
+# sub : 문자형 벡터 x에서 처음 나오는 old 문자를 new 문자로 한번만 바꾸기
+z <- c("My name is Chulsu. What's your name?")
+sub("name", "first name", z)
+
+# gsub : gsub()는 모든 old 문자를 new 문자로 바꿈, Pattern Matching and Replacement
+# http://lightblog.tistory.com/15
+gsub("name", "first name", z)
+
+data<-c("12.57869486" ,"12.57869582" ,"12.57870155")
+a<-gsub(".", " ", data, fixed=TRUE)
+
+
+# 문자열 벡터에서 특정 부분 문자열 패턴 찾기
+grep("1010", c("1001", "1010", "1110", "101000"))
+grep("1010", c("1001", "1009", "1110", "100000"))
+
+data <- data.frame(values=c(91, 92, 108, 104, 87, 91, 91, 97, 81, 98), 
+                   names = c("fee-", "fi", "fo-", "fum-", "foo-", "foo1234-", "123foo-", 
+                             "fum-", "fum-", "fum-"))
+data$values[grep("foo",data$names)]
+
+
+
+# regexpr() : text 내에서 패턴이 가장 먼저 나오는 위치 찾기
+regexpr("NY", "I love NY and I'm from NY")
+
+# gregexpr() : text 내에서 패턴이 나오는 모든 위치를 찾기
+gregexpr("NY", "I love NY and I'm from NY")
+
+# sample function with example
+# R을 이용한 추첨 시뮬레이션
+# 꽝과 1등을 뽑는 lottery 작성
+lottery <- c("꽝","1등")
+# lottery 내용 확인
+lottery
+
+# lottery의 요소는 두 개지만 R 명령으로
+# '꽝'과 '1등'을 99:1의 비율로 등장하도록
+# 조정할 수 있다.
+sample(lottery, 1, prob = c(99,1))
+# sample은 무작위(랜덤)로 추출하는 함수로
+# 위에서 하나만 추출하고 있다
+
+# 100개 추출하는 경우 replace = TRUE를 추가로 지정하면 된다.
+# 몇 번 추출하든지 99:1 비율으 변하지 않는다.
+sample(lottery, 100, prob = c(99,1), replace = TRUE)
+
+
+#　추첨을 매일 100회, 일주일동안 뽑아서 1등이 나온 횟수를 시뮬레이션
+replicate (7, sample (lottery, 100, prob = c(99,1), replace = TRUE) ) # 100행 7열의 결과가 표시된다
+# replicate 라는 함수는 명령을 지정한 횟수만큼 반복 실행한다
+### 구문: replicate (횟수, 명령)
+
+# １등이 나온 횟수를 센다
+sum ( replicate (7, sample (lottery, 100, prob = c(99,1), replace = TRUE) ) == "1등")
+### 구문  sum (A == "1등"), A 안에 포함된 1등을 세는 명령
+
+
+# 100회 추첨하는 것을 7일 반복해서 1등이 나온 총 횟수를 구한다.
+# 그리고 이 계산을 1000주 반복하는 명령을 작성한다
+# 결과는 res로 저장한다
+res <- replicate(1000, sum(replicate (7, sample (lottery, 100, prob = c(99,1), replace = TRUE) ) == "1등"))
+
+### 구문 　replicate (1000, 합계（replicate (7, 100회 추첨했을 때의 1등이 나온 횟수）)
+
+# 간단한 히스토그램 작성 
+hist(res)
+
+
+# 1. Matrix 선언하기
+# matrix( data, nrow, ncol, byrow = FALSE)
+
+# data: 행렬에 들어가는 데이터
+# nrow: row(행)의 수
+# ncol: column(열)의 수
+#byrow: 기본적으로 열(column)을 기준으로 숫자가 들어감 (FALSE)
+           TRUE로 지정할 시 행(row) 기준으로 숫자가 들어간다.
+
+ mat = matrix(1:20, nrow=5, ncol=4)
+ mat
+
+# 행열 요소 추출, 치환
+
+mat[1,1]
+
+mat[, 2] # 빈칸이면 해당 인덱스의 모든인자 추출
+
+mat[ c(3,4), ] # 벡터를 이용하여 여러 데이터 동시 추출 가능
+ 
+
+mat [1,1] = 99 # Matrix의 치환
+mat
+
+mat[5,] <- c(55,66,77,88) # 벡터를 이용하여 치환
+mat
+
+sum(mat) # 메트릭스에 함수 적용 가능
+
+
+
+apply(mat,1, sum) # mat matrix의 row별 합 구하기
+apply(mat, 2, sd) # mat matrix의 column별 표준편차 구하기
+# margin: 1 (row), 2(column)
+
+mat = matrix(1:20, ncol=4, nrow=5)
+mat
+
+apply(mat, 1, sum)
+
+apply(mat, 2, sd)
+
+
+
+# rbind & cbind
+data(iris)
+iris
+
+dim(iris)
+
+colnames(iris)
+rownames(iris)
+names(iris)
+head(iris)
+
+#
+iris1<-iris[1:75,]
+iris2<-iris[76:150,]
+r<-rbind(iris1,iris2)
+#
+iris1<-iris[,1:3]
+iris2<-iris[,4:5]
+c<-cbind()
+
+# merge
+df1 = data.frame(CustomerId = c(1:6), Product = c(rep("Toaster", 3), rep("Radio", 3)))
+df2 = data.frame(CustomerId = c(2, 4, 6), State = c(rep("Alabama", 2), rep("Ohio", 1)))
+
+# merge two data frames by ID
+total <- merge(data frameA,data frameB,by="ID")
+# merge two data frames by ID and Country
+total <- merge(data frameA,data frameB,by=c("ID","Country"))
+
+
+#  vist below website!!!!
+# http://rfriend.tistory.com/51
+## 데이터 프레임 생성
+cust_id <- c("c01","c02","c03","c04")
+last_name <- c("Kim", "Lee", "Choi", "Park")
+cust_mart_1 <- data.frame(cust_id, last_name)
+cust_mart_1
+
+cust_mart_2 <- data.frame(cust_id = c("c05", "c06", "c07"),last_name = c("Bae", "Kim", "Lim"))
+cust_mart_2
+
+
+## (1) 행 결합 (위 + 아래)  rbind(A, B)
+cust_mart_12 <- rbind(cust_mart_1, cust_mart_2)
+cust_mart_12
+
+
+cust_mart_3 <- data.frame(cust_id = c("c08", "c09"), last_name = c("Lee", "Park"),gender = c("F", "M"))
+cust_mart_3
+
+
+rbind(cust_mart_12, cust_mart_3)
+# ? 
+
+
+cust_mart_4 <- data.frame(cust_id = c("c10", "c11"), first_name = c("Kildong", "Yongpal"))
+cust_mart_4
+
+bind(cust_mart_12, cust_mart_4)
+# ?
+
+cust_mart_5 <- data.frame(age = c(20, 25, 19, 40, 32, 39, 28),income = c(2500, 2700, 0, 7000, 3400, 3600, 2900))
+
+cust_mart_12
+
+
+cust_mart_5
+
+cust_mart_125 <- cbind(cust_mart_12, cust_mart_5)
+cust_mart_125
+
+
+cust_mart_6 <- data.frame(age = c(34, 50),income = c(3600, 5100))
+cust_mart_6
+
+cbind(cust_mart_125, cust_mart_6)
+# ?
+
+cust_mart_12
+
+cust_mart_7 <- data.frame(cust_id = c("c03", "c04", "c05", "c06", "c07", "c08", "c09"),buy_cnt = c(3, 1, 0, 7, 3, 4, 1))
+
+cust_mart_7
+
+cust_mart_127_cbind <- cbind(cust_mart_12, cust_mart_7)
+
+cust_mart_127_cbind
+
+
+# (3-1) merge() : Inner Join
+cust_mart_127_innerjoin <- merge(x = cust_mart_12,y = cust_mart_7, by = 'cust_id')
+cust_mart_127_innerjoin
+
+
+# (3-2) merge() : Outer Join
+cust_mart_127_outerjoin <- merge(x = cust_mart_12, y = cust_mart_7,by = 'cust_id',all = TRUE)
+cust_mart_127_outerjoin
+
+
+# (3-3) merge() : Left Outer Join
+cust_mart_127_leftouter <- merge(x = cust_mart_12,y = cust_mart_7,by = 'cust_id',all.x = TRUE)
+cust_mart_127_leftouter
+
+
+# (3-4) merge : Right Outer Join
+cust_mart_127_rightouter <- merge(x = cust_mart_12, y = cust_mart_7, by = 'cust_id',all.y = TRUE)
+cust_mart_127_rightouter
+
+
+# iris1 : save as csv
+# iris2 : save as csv
+
+# 데이터의 구조 보여주기
+str(data)
+
+# 데이터 요약
+summary(data)
+
+# iris data 정렬하기
+newdata<-iris[order(iris$@@@),]
+# newdata<-iris[-order(iris$@@@),]
+
+# ex : 정렬한 데이터를 반으로 나누어 csv file로 저장하기
+# write.csv(mydata,"")y each variable
+
+
+######## more advanced data manipulation########
+library(MASS)
+data(UScereal)
+head(UScereal)
+UScereal
+dim(UScereal)
+names(UScereal)
+attach(UScereal)
+# detach(UScereal)
+
+##########################################
+###################변수 설명################
+##########################################
+# mfr=manufacturer
+# calories= number of calories in one protion
+# protein=grams of protein in one portion
+# fat=frams of fat in one portion
+# sodium=miligrams of sodium in one portion
+# fibre=grams of dietary fibre in one portion
+# carbo=grams of complex carbohydrates in one portion
+# sugars=grams of sugars in one portion
+# shelf=display shelf(1,2, or 3, counting )
+# potassium=grams of potassium
+# vitamins=vitamins and minerals(none, enriched, or 100%)
+
+names(UScereal)
+# 관심있는 변수 6개를 택해보자. 자신을 식품 관련 연구원(국민에게 건강한 식품을 제안해야 하는)
+# ex : 1) 6개의 변수 오름/ 내림으로 정렬해보자. 2) 각각의 정리된 데이터셋을 지정한 폴더에 저장해보기
+
+
+UScerealCPrS<-UScereal[,c(2,3,5,8)]
+
+plot(UScerealCPrS)
+head(UScerealCPrS)
+
+UScerealonetofour<-UScereal["Wheaties",1:4]
+head(UScerealonetofour)
+
+UScerealonetoten<-UScereal[1:20,]
+
+UScerealmfrG<-UScereal[UScereal$mfr=="G",]
+UScerealmfrG.1<-UScereal[UScereal$mfr=="G",c(1,3,7)]
+UScerealmfrGKP<-UScereal[UScereal$mfr%in%c("G","K","P"),]
+
+UScereal[with(mfr=="G"& sugars>15),]
+UScereal[mfr=="G"& sugars>15,]
+UScerealGHsugar<-UScereal[with(UScereal, mfr=="G"& sugars>mean(sugars)),]
+UScereal[with(UScereal, mfr=="P"& calories>mean(calories)),]
+Gsodi<-UScereal[with(UScereal, mfr=="G"& sodium>mean(sodium)),]
+
+subset(UScereal,sugars<10)
+sugars.10<-subset(UScereal,sugars>10)
+HsugarsLcalories<-subset(UScereal,sugars>10&calories<120)
+HsugarsLcalories.1<-subset(UScereal,sugars>10&calories<120,select=c(sugars,calories))
+HsugarsLcalories.2<-subset(UScereal,sugars>10&calories<120,select=mfr:protein)
+
+
+# http://www.statmethods.net/graphs/bar.html
+# 범주형 데이터로 변환 시키기 그리고 bar plot그리기
+
+colnames(UScereal)
+UScereal$sugars1[UScereal$sugars>=mean(UScereal$sugars)]="high"
+UScereal$sugars1[UScereal$sugars<mean(UScereal$sugars)]="low"
+
+# 실습-범주별로 데이터를 나누어 다른 이름으로 저장하기
+counts<-UScereal$sugars1
+barplot(counts, main="sugars Distribution", 
+  	xlab="Amount of Suagrs")
+
+# ex : 4개의 연속 변수를 명목 변수로 바꾸고 1)테이블로 정리, 2)bar plot으로 시각화
+
+
+
+#############다이어트와 관련된 영양소를 찾아보자###############
+#### 1) calories
+#### 2) protein
+#### 3) sugars
+#### 4) fibre
+
+# 1) calories
+mean(calories)
+min(calories)
+max(calories)
+summary(calories)
+hist(calories)$counts
+
+hist(calories,breaks=30, main="Calories",col="red")
+# http://stackoverflow.com/questions/9317948/how-to-label-histogram-bars-with-data-values-or-percents-in-r
+help(hist)
+
+# 2)
+
+# 3)
+
+# 4)
+
+########## 여러개의 그래프를 한 페이지에#############
+par(mfrow=c(1,3))
+hist(calories,breaks=30,, main="Calories",col="red")
+hist(fat,breaks=30, main="Fat",col="red")
+hist(sugars,breaks=30, main="Sugars",col="red")
+
+
+############ sugars, fat, and calories를 전체 평균보다 중간 이하 포함한 제품을 찾아라.
+# Condition
+sugL<-subset(UScereal,sugars<mean(sugars))
+sugLcalL<-subset(sugL,sugL$calories<mean(sugL$calories))
+sugLcalLfatL<-subset(sugLcalL,sugLcalL$fat<mean(sugLcalL$fat))
+
+############# Sugars, fat, and calories 모두가 전체 평균보다 중간보다 큰 제품을 찾아라.
+sugH<-subset(UScereal,sugars>mean(sugars))
+sugHcalH<-subset(sugH,sugH$calories>mean(sugH$calories))
+sugHcalHfatH<-subset(sugHcalH,sugHcalH$fat>mean(sugHcalH$fat))
+
+# 비교
+summary(sugLcalLfatL)
+summary(sugHcalHfatH)
+
+
+# 비교
+summary(sugLcalLfatL)
+summary(sugHcalHfatH)
+
+
+# 들어가기전에 생긴 RQ1. 의사가 말하길 이 세가지 영양소가 나의 건강에 좋지 않을거라 했다. 되도록 이들 영양소를 최소한으로 섭취하고 싶다.
+# 이 세 영양소들은 어떤 상관관계인가? 강한 상관관계라면 이 세가지 중 한가지를 고려하여(가장 작은 함유량 서택) 
+# 자동적으로 다른 영양소도 적게 함유하게 된다. 결국 셋중에 하나만 고려해도 된다. 아니라면 선택이 복잡해진다. 
+# fat은 적은데 sugars가 많다면....? 쉽게 골라보자. 
+
+plot(calories,fat)
+text(calories,fat,labels=row.names(UScereal),pos=4, cex=0.6, col="blue")
+
+plot(calories,sugars)
+text(calories,sugars,labels=row.names(UScereal),pos=4, cex=0.6, col="red")
+
+plot(sugars,fat)
+text(sugars,fat,labels=row.names(UScereal),pos=4, cex=0.6, col="black")
+
+# Brand Name 
+plot(calories,fat,main="Nutrition",xlab="Calories", ylab="Fat")
+text(calories,fat,labels=mfr,pos=4, cex=0.6, col="red")
+
+plot(calories,sugars,main="Nutrition",xlab="Calories", ylab="Sugars")
+text(calories,sugars,labels=mfr,pos=4, cex=0.6, col="red")
+
+plot(sugars,fat,main="Nutrition",xlab="Sugars", ylab="Fat")
+text(sugars,fat,labels=mfr,pos=4, cex=0.6, col="red")
+
+par(mfrow=c(1,3))
+plot(calories,fat,main="Nutrition",xlab="Calories", ylab="Fat")
+text(calories,fat,labels=mfr,pos=4, cex=0.6, col="red")
+plot(calories,sugars,main="Nutrition",xlab="Calories", ylab="Sugars")
+text(calories,sugars,labels=mfr,pos=4, cex=0.6, col="red")
+plot(sugars,fat,main="Nutrition",xlab="Sugars", ylab="Fat")
+text(sugars,fat,labels=mfr,pos=4, cex=0.6, col="red")
+
+# 제조사
+plot(calories,fat, pch=21,main="Nutrition",xlab="Calories", ylab="fat",bg=c("red","yellow","green","blue","black","pink")[unclass(mfr)])
+text(calories,fat,labels=mfr,pos=4, cex=0.6, col="red")
+
+plot(calories,sugars, pch=21, main="Nutrition",xlab="Calories", ylab="sugars",bg=c("red","yellow","green","blue","black","pink")[unclass(mfr)])
+text(calories,sugars,labels=mfr,pos=4, cex=0.6, col="red")
+
+plot(sugars,fat, pch=21, main="Nutrition",xlab="sugars", ylab="fat",bg=c("red","yellow","green","blue","black","pink")[unclass(mfr)])
+text(sugars,fat,labels=mfr,pos=4, cex=0.6, col="red")
+
+# ploting with different shape
+plot(calories,fat,pch=c(21,22,23,24,25,26)[unclass(mfr)],main="Nutrition",xlab="Calories", ylab="fat",bg=c("red","yellow","green","blue","black","pink")[unclass(mfr)])
+text(calories,fat,labels=mfr,pos=4, cex=0.6, col="red")
+c(21,22,23,24,25,26)[unclass(mfr)]  
+
+# arrange three graphs in one page
+par(mfrow=c(1,2))  
+plot(calories,fat,main="Nutrition",xlab="Calories", ylab="Fat")
+text(calories,fat,labels=mfr,pos=4, cex=0.6, col="red")
+plot(calories,fat,main="Nutrition",xlab="Calories", ylab="Fat", pch=21, bg=c("red","yellow","green","blue","black","pink")[unclass(mfr)])
+
+par(mfrow=c(1,2))  
+plot(calories,sugars,main="Nutrition",xlab="Calories", ylab="Sugars")
+text(calories,sugars,labels=mfr,pos=4, cex=0.6, col="red")
+plot(calories,sugars,main="Nutrition",xlab="Calories", ylab="Sugars", pch=21, bg=c("red","yellow","green","blue","black","pink")[unclass(mfr)])
+
+par(mfrow=c(1,2))  
+plot(sugars,fat,main="Nutrition",xlab="Sugars", ylab="Fat")
+text(sugars,fat,labels=mfr,pos=4, cex=0.6, col="red")
+plot(sugars,fat,main="Nutrition",xlab="Sugars", ylab="Fat", pch=21, bg=c("red","yellow","green","blue","black","pink")[unclass(mfr)])
+
+# Calories, Sugars, Fat 서로 상관 관계가 있는듯 보인다. 좀 더 정확히 확인해봅시다. 
+
+# Correlation Graph
+pairs(~calories+fat+sugars,data=UScereal, main="Simple Scatterplot Matrix")
+plot(~calories+fat+sugars,data=UScereal, main="Simple Scatterplot Matrix")
+
+
+
+
+# practice more with different data
+
+data("mtcars")
+
+# Simple Bar Plot 
+counts <- table(mtcars$gear)
+barplot(counts, main="Car Distribution", 
+  	xlab="Number of Gears")
+    
+# Simple Horizontal Bar Plot with Added Labels 
+counts <- table(mtcars$gear)
+barplot(counts, main="Car Distribution", horiz=TRUE,
+  names.arg=c("3 Gears", "4 Gears", "5 Gears"))    
+
+# Stacked Bar Plot with Colors and Legend
+counts <- table(mtcars$vs, mtcars$gear)
+barplot(counts, main="Car Distribution by Gears and VS",
+  xlab="Number of Gears", col=c("darkblue","red"),
+ 	legend = rownames(counts))
+  
+# Grouped Bar Plot
+counts <- table(mtcars$vs, mtcars$gear)
+barplot(counts, main="Car Distribution by Gears and VS",
+  xlab="Number of Gears", col=c("darkblue","red"),
+ 	legend = rownames(counts), beside=TRUE)
+
+# Simple Histogram
+hist(mtcars$mpg)
+
+# Colored Histogram with Different Number of Bins
+hist(mtcars$mpg, breaks=12, col="red")
+
+# Add a Normal Curve (Thanks to Peter Dalgaard)
+x <- mtcars$mpg 
+h<-hist(x, breaks=10, col="red", xlab="Miles Per Gallon", 
+  	main="Histogram with Normal Curve") 
+xfit<-seq(min(x),max(x),length=40) 
+yfit<-dnorm(xfit,mean=mean(x),sd=sd(x)) 
+yfit <- yfit*diff(h$mids[1:2])*length(x) 
+lines(xfit, yfit, col="blue", lwd=2)
+
+# Kernel Density Plot
+d <- density(mtcars$mpg) # returns the density data 
+plot(d) # plots the results
+
+# Compare MPG distributions for cars with 
+# 4,6, or 8 cylinders
+install.packages("sm")
+library(sm)
+attach(mtcars)
+
+# create value labels 
+cyl.f <- factor(cyl, levels= c(4,6,8),
+  labels = c("4 cylinder", "6 cylinder", "8 cylinder")) 
+
+# plot densities 
+sm.density.compare(mpg, cyl, xlab="Miles Per Gallon")
+title(main="MPG Distribution by Car Cylinders")
+
+# add legend via mouse click
+colfill<-c(2:(2+length(levels(cyl.f)))) 
+legend(locator(1), levels(cyl.f), fill=colfill)
+
+# package installation
+# box plot, table, bar plot
+install.packages("ggplot2")
+library("ggplot2")
+data(diamonds)
+
+diamonds$price1[diamonds$price<500]="low"
+diamonds$price1[diamonds$price>=500&diamonds$price<2000]="middle"
+diamonds$price1[diamonds$price>=2000&diamonds$price<5000]="high"
+diamonds$price1[diamonds$price>=5000]="very high"
+
+table(diamonds$price1)
+boxplot(carat~price1, outline=FALSE, data=diamonds)
+
+# 이름 순서대로 바꾸려면 한 가지 명령어가 더 들어가야 합니다. 
+diamonds$price1=factor(diamonds$price1, levels=c("low","middle","high","very high"))
+boxplot(carat~price1, outline=FALSE, data=diamonds)
+
+# R 결측값 확인 및 처리: is.na(), sum(is.na()), na.rm=TRUE, na.omit(), complete.cases()
+
+x <- c(1, 2, 3, 4, NA, 6, 7, 8, 9, NA)
+is.na(x)
+sum(is.na(x))
+
+sum(x)
+
+mean(x)
+
+sum(x, na.rm = TRUE)
+
+mean(x, na.rm = TRUE)
+
+
+library(MASS)
+is.na(Cars93)
+str(Cars93)
+
+# Cars93 데이터 프레임에 결측값 갯수 총 합계 구하기
+sum(is.na(Cars93))
+
+# Cars93 의 각 변수별로 결측값 개수 구하기 (27개 중에서 4개만 예시로 함)
+sum(is.na(Cars93$Manufacturer)) 
+sum(is.na(Cars93$Price))
+sum(is.na(Cars93$Rear.seat.room))
+sum(is.na(Cars93$Luggage.room))
+colSums(is.na(Cars93))
+
+sum(Cars93$Luggage.room)
+
+mean(Cars93$Luggage.room)
+
+sum(Cars93$Luggage.room, na.rm = TRUE)
+
+mean(Cars93$Luggage.room, na.rm = TRUE)
+
+Cars93_1 <- na.omit(Cars93)
+str(Cars93_1)
+str(Cars93)
+
+# 데이터프레임의 모든 행의 결측값을 특정 값(가령, '0')으로 일괄 대체 
+# dataset[is.na(dataset)] <- 0
+
+#########################################################
+###########################dplyr########################
+#########################################################
+# https://rpubs.com/justmarkham/dplyr-tutorial
+install.packages("dplyr")
+library(dplyr)
+install.packages("hflights")
+library(hflights)
+install.packages("magrittr")
+library(magrittr)
+
+data(hflights)
+head(hflights)
+flights <- tbl_df(hflights)
+flights<-hflights
+str(flights)
+head(flights)
+
+# base R approach to view all flights on January 1
+flights[flights$Month== 11 & flights$DayofMonth==4, ]
+filter(flights, UniqueCarrier=="AA" | UniqueCarrier=="UA")
+filter(flights, UniqueCarrier %in% c("AA", "UA"))
+
+
+# base R approach to select DepTime, ArrTime, and FlightNum columns
+flights[, c("DepTime", "ArrTime", "FlightNum")]
+
+# dplyr approach
+select(flights, DepTime, ArrTime, FlightNum)
+
+# use colon to select multiple contiguous columns, and use `contains` to match columns by name
+# note: `starts_with`, `ends_with`, and `matches` (for regular expressions) can also be used to match columns by name
+select(flights, Year:DayofMonth, contains("Taxi"), contains("Delay"))
+
+# nesting method to select UniqueCarrier and DepDelay columns and filter for delays over 60 minutes
+filter(select(flights, UniqueCarrier, DepDelay), DepDelay > 60)
+
+# base R approach to select UniqueCarrier and DepDelay columns and sort by DepDelay
+head(flights[order(flights$DepDelay), c("UniqueCarrier", "DepDelay")])
+head(flights[order(-flights$DepDelay), c("UniqueCarrier", "DepDelay")])
+# sort, order, arrange 
+# http://stackoverflow.com/questions/14817620/how-to-sort-a-data-frame-by-alphabetic-order-of-a-character-variable-in-r
+
+# 
+# %>%== >then
+a<-flights %>%
+  select(UniqueCarrier, DepDelay) %>%
+  arrange(-DepDelay)
+head(a)
+# base R approach to create a new variable Speed (in mph)
+flights$Speed <- flights$Distance / flights$AirTime*60
+flights[, c("Distance", "AirTime", "Speed")]
+
+# dplyr approach (prints the new variable but does not store it)
+flights %>%
+  select(Distance, AirTime) %>%
+  mutate(Speed = Distance/AirTime*60)
+
+# base R approaches to calculate the average arrival delay to each destination
+# head(with(flights, tapply(ArrDelay, Dest, mean, na.rm=TRUE)))
+# head(aggregate(ArrDelay ~ Dest, flights, mean))
+
+##x <- c(1,2,NA,3)
+## mean(x) # returns NA
+## mean(x, na.rm=TRUE) # returns 2
+
+
+# dplyr approach: create a table grouped by Dest, and then summarise each group by taking the mean of ArrDelay
+flights %>%
+  group_by(UniqueCarrier) %>%
+  summarise(avg_delay = mean(ArrDelay, na.rm=TRUE))
+
+
+names(flights)
+
+# for each carrier, calculate the percentage of flights cancelled or diverted
+flights %>%
+  group_by(UniqueCarrier) %>%
+  summarise_each(funs(mean), Cancelled, Diverted)
+
+
+
+# for each carrier, calculate the minimum and maximum arrival and departure delays
+flights %>%
+  group_by(UniqueCarrier) %>%
+  summarise_each(funs(min(., na.rm=TRUE), max(., na.rm=TRUE)), matches("Delay"))
+
+
+# for each day of the year, count the total number of flights and sort in descending order
+
+# rewrite more simply with the `tally` function
+flights %>%
+  group_by(Month, DayofMonth) %>%
+  tally(sort = TRUE)
+
+# for each destination, show the number of cancelled and not cancelled flights
+flights %>%
+  group_by(Dest) %>%
+  select(Cancelled) %>%
+  table() %>%
+  head()
+
+# for each carrier, calculate which two days of the year they had their longest departure delays
+# note: smallest (not largest) value is ranked as 1, so you have to use `desc` to rank by largest value
+flights %>%
+  group_by(UniqueCarrier) %>%
+  select(Month, UniqueCarrier, DayofMonth, DepDelay) %>%
+  filter(min_rank(desc(DepDelay)) <= 2) %>%
+  arrange(UniqueCarrier, desc(DepDelay))
+
+
+# R- Basic Graphic
+# scatterplot
+hsb2 <- read.table('http://www.ats.ucla.edu/stat/r/modules/hsb2.csv', header=T, sep=",")
+
+hsb2$race
+
+attach(hsb2)
+race
+
+# 산점도
+plot(read, write)
+cor(read, write)
+
+# practice more!
+
+# line
+plot(math, write)
+abline(lsfit(write, math))
+
+#alternatively
+plot(math, write)
+fit<-lm(write ~ math)
+abline(fit)
+
+
+# pch for plotting characters, or symbol to use
+# see help(points) for more information on pch
+
+hsb2
+
+hsb2_female<-hsb2[female==1,]
+hsb2_male<-hsb2[female==0,]
+with(hsb2_female, plot(math, write, pch=20, col="darkred"))
+with(hsb2_male, points(math, write, pch=20, col="darkblue"))
+
+# alternatively 
+math_male<-hsb2$math[female==0]
+write_male<-hsb2$write[female==0]
+math_female<-hsb2$math[female==1]
+write_female<-hsb2$write[female==1]
+
+plot(math_female, write_female, type="p", 
+     pch=20, col="darkred")
+points(math_male, write_male, pch=22, col="darkblue")
+
+
+
+# race 별로 점을 찍어 봅시다.
+# race == 1
+# race == 2
+# race == 3
+# race == 4 
+hsb2_r1<-hsb2[race==1,]
+hsb2_r2<-hsb2[race==2,]
+hsb2_r3<-hsb2[race==3,]
+hsb2_r4<-hsb2[race==4,]
+with(hsb2_r1, plot(math, write, pch=20, col="darkred"))
+with(hsb2_r2, points(math, write, pch=20, col="darkblue"))
+with(hsb2_r3, points(math, write, pch=20, col="green"))
+with(hsb2_r4, points(math, write, pch=20, col="pink"))
+
+
+# ses 별로 점을 찍어 봅시다.
+
+
+
+
+
+# adding legend 
+hsb2_female<-hsb2[female==1,]
+hsb2_male<-hsb2[female==0,]
+with(hsb2_female, plot(math, write, pch=20, 
+                       col="darkred", ylim=c(25, 70)))
+with(hsb2_male, points(math, write, pch=22, 
+                       col="darkblue"))
+legend(65, 35, c("female", "male"), pch=c(20, 22), 
+       cex=.8, col=c("darkred", "darkblue"))
+
+
+# male vs female
+math_male<-hsb2$math[female==0]
+write_male<-hsb2$write[female==0]
+math_female<-hsb2$math[female==1]
+write_female<-hsb2$write[female==1]
+plot(math_female, write_female, type="p", pch=20,
+     col="darkred", ylim=c(25, 70))
+points(math_male, write_male, pch=22, col="darkblue")
+abline(lsfit(write_female, math_female), col="darkred")
+abline(lsfit(write_male, math_male), col="darkblue")
+legend(65, 35, c("female", "male"), pch=c(20, 22), 
+       cex=.8, col=c("darkred", "darkblue"))
+
+
+# add title and axis name
+# plot(faithful,
+#       main = "Eruptions of Old Faithful",
+#       xlab = "Eruption time (min)",
+#       ylab = "Waiting time to next eruption (min)")
+
+
+
+# race의 math와 write의 산점도, 추세선, 레전드 그려보기
+hsb2_r1<-hsb2[race==1,]
+hsb2_r2<-hsb2[race==2,]
+hsb2_r3<-hsb2[race==3,]
+hsb2_r4<-hsb2[race==4,]
+with(hsb2_r1, plot(math, write, pch=20, col="darkred"))
+with(hsb2_r2, points(math, write, pch=20, col="darkblue"))
+with(hsb2_r3, points(math, write, pch=20, col="green"))
+with(hsb2_r4, points(math, write, pch=20, col="pink"))
+
+
+# boxplot
+data<-data.frame(Stat11=rnorm(100,mean=3,sd=2),
+                 Stat21=rnorm(100,mean=4,sd=1),
+                 Stat31=rnorm(100,mean=6,sd=0.5),
+                 Stat41=rnorm(100,mean=10,sd=0.5),
+                 Stat12=rnorm(100,mean=4,sd=2),
+                 Stat22=rnorm(100,mean=4.5,sd=2),
+                 Stat32=rnorm(100,mean=7,sd=0.5),
+                 Stat42=rnorm(100,mean=8,sd=3),
+                 Stat13=rnorm(100,mean=6,sd=0.5),
+                 Stat23=rnorm(100,mean=5,sd=3),
+                 Stat33=rnorm(100,mean=8,sd=0.2),
+                 Stat43=rnorm(100,mean=4,sd=4))
+# Basic
+boxplot(data)
+
+# arrange variable names vertically
+boxplot(data, las = 2)
+
+# 
+boxplot(data, las = 2, names = c(“Station 1”,“Station 2”,“Station 3”,“Station 4”,“Station 1”,“Station 2”,“Station 3”,“Station 4”,“Station 1”,“Station 2”,“Station 3”,“Station 4”))
+
+# title
+boxplot(data, ylab =“Oxigen (%)”, xlab =“Time”,las = 2, names = c(“Station 1”,“Station 2”,“Station 3”,“Station 4”,“Station 1”,“Station 2”,“Station 3”,“Station 4”,“Station 1”,“Station 2”,“Station 3”,“Station 4”))
+
+
+hsb2 <- read.table('http://www.ats.ucla.edu/stat/r/modules/hsb2.csv', header=T, sep=",")
+attach(hsb2)
+
+
+# 성적별로 범주형 데이터로 나누기  
+
+
+# Histogram
+# 정규 분포의 성질 이해하기
+# 정규 분포를 따를때 예측 가능한 것들
+u <- rnorm(1000)
+#default histogram
+hist(u)
+
+#with shading
+hist(u, density=20)
+
+#with specific number of bins
+hist(u, density=20, breaks=20)
+
+# proportion, instead of frequency
+# also specifying y-axis
+hist(u, density=20, breaks=-3:3, 
+     ylim=c(0,.5), prob=TRUE)
+
+hist(u, density=20, prob=TRUE)
+
+# density plot
+
+
+# overlay normal curve with x-lab and ylim
+# colored normal curve
+m<-mean(u)
+std<-sqrt(var(u))
+hist(u, density=20, breaks=20, prob=TRUE, 
+     xlab="x-variable", ylim=c(0, 0.7), 
+     main="normal curve over histogram")
+curve(dnorm(x, mean=m, sd=std), 
+      col="darkblue", lwd=2, add=TRUE)
+
+hist(u, density=20, breaks=20, prob=TRUE, 
+     xlab="x-variable", ylim=c(0, 0.8),
+     main="Density curve over histogram") 
+lines(density(u), col = "blue")
+
+# hist(u) is an object
+# names(uh) will show all of its components
+uh<-hist(u)
+plot(uh, ylim=c(0, 40), col="lightgray", 
+     xlab="", main="Histogram of u")
+text(uh$mids, uh$counts+2, label=c(uh$counts))
+
+
+# probability 예측해봅시다
+
+1-pnorm(330,m=280,sd=40)
+
+# 누적분포함수 값 p에 해당하는 분위수 q 를 알고 싶을 때
+qnorm(p=0.8413447, mean=0, sd=1)
+
+
+# Play with data set
+install.packages("car")
+library(car)
+data(mtcars)
+newdata<-mtcars[,c(1,3,4,5,6)]
+plot(newdata)
+cor(newdata)
+class(mtcars$vs)
+dim(mtcars)
+head(mtcars)
+attributes(mtcars)
+names(mtcars)
+rownames(mtcars)
+
+mtcars$gear
+attach(mtcars)
+gear
+mtcars["Fiat 128",]
+
+# am 오토메틱, 메뉴얼
+mtcars$am<-as.factor(mtcars$am)
+mtcars$vs<-as.factor(mtcars$vs)
+summary(mtcars)
+
+# 조건을 둔 추출
+mtcars[which.max(mtcars$mpg),]
+mtcars[which.min(mtcars$wt),]
+
+# 데이터 정리
+aggregate(mpg~gear, data=mtcars, FUN="mean")
+aggregate(mpg~gear, data=mtcars, FUN="sd")
+
+
+# more information
+# http://dwoll.de/rexrepos/index.html
+
+# 산점도 Plot
+plot(mtcars)
+attach(mtcars)
+
+plot(hp~mpg)
+plot(cyl~mpg)
+
+# pie chart
+table(mtcars$am)
+auto=mtcars$am
+matic=table(auto)
+pie(matic)
+auto=mtcars$gear
+matic=table(auto)
+pie(matic)
+
+
+
+help(pairs)
+help(plot)
+library(car)
+scatterplot.matrix(~calories+fat+sugars|mfr, data=UScereal,main="Scatterplot")
+
+mtcars[grep("Merc", rownames(mtcars)), ]
+
+# sort by mpg and cyl
+newdata <- mtcars[order(mpg, cyl),]
+
+#sort by mpg (ascending) and cyl (descending)
+newdata <- mtcars[order(mpg, -cyl),] 
+
+
+
+# 3D Scatterplot
+
+install.packages("plotly")
+library(plotly)
+packageVersion('plotly')
+
+mtcars$am[which(mtcars$am == 0)] <- 'Automatic'
+mtcars$am[which(mtcars$am == 1)] <- 'Manual'
+mtcars$am <- as.factor(mtcars$am)
+
+p <- plot_ly(mtcars, x = ~wt, y = ~hp, z = ~qsec, color = ~am, colors = c('#BF382A', '#0C4B8E')) %>%
+  add_markers() %>%
+  layout(scene = list(xaxis = list(title = 'Weight'),
+                      yaxis = list(title = 'Gross horsepower'),
+                      zaxis = list(title = '1/4 mile time')))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="scatter3d/basic")
+chart_link
+
+
+# 3D Scatter Plot with Color Scaling
+p <- plot_ly(mtcars, x = ~wt, y = ~hp, z = ~qsec, 
+             marker = list(color = ~mpg, colorscale = c('#FFE1A1', '#683531'), showscale = TRUE)) %>%
+  add_markers() %>%
+  layout(scene = list(xaxis = list(title = 'Weight'),
+                      yaxis = list(title = 'Gross horsepower'),
+                      zaxis = list(title = '1/4 mile time')),
+         annotations = list(
+           x = 1.13,
+           y = 1.05,
+           text = 'Miles/(US) gallon',
+           xref = 'paper',
+           yref = 'paper',
+           showarrow = FALSE
+         ))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="scatter3d/colorscale")
+chart_link
+
+
+
+# 3D Bubble Plot
+library(plotly)
+
+data <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/gapminderDataFiveYear.csv")
+
+data_2007 <- data[which(data$year == 2007),]
+data_2007 <- data_2007[order(data_2007$continent, data_2007$country),]
+data_2007$size <- data_2007$pop
+colors <- c('#4AC6B7', '#1972A4', '#965F8A', '#FF7070', '#C61951')
+
+p <- plot_ly(data_2007, x = ~gdpPercap, y = ~lifeExp, z = ~pop, color = ~continent, size = ~size, colors = colors, 
+             marker = list(symbol = 'circle', sizemode = 'diameter'), sizes = c(5, 150),
+             text = ~paste('Country:', country, '<br>Life Expectancy:', lifeExp, '<br>GDP:', gdpPercap,
+                           '<br>Pop.:', pop)) %>%
+  layout(title = 'Life Expectancy v. Per Capita GDP, 2007',
+         scene = list(xaxis = list(title = 'GDP per capita (2000 dollars)',
+                                   gridcolor = 'rgb(255, 255, 255)',
+                                   range = c(2.003297660701705, 5.191505530708712),
+                                   type = 'log',
+                                   zerolinewidth = 1,
+                                   ticklen = 5,
+                                   gridwidth = 2),
+                      yaxis = list(title = 'Life Expectancy (years)',
+                                   gridcolor = 'rgb(255, 255, 255)',
+                                   range = c(36.12621671352166, 91.72921793264332),
+                                   zerolinewidth = 1,
+                                   ticklen = 5,
+                                   gridwith = 2),
+                      zaxis = list(title = 'Population',
+                                   gridcolor = 'rgb(255, 255, 255)',
+                                   type = 'log',
+                                   zerolinewidth = 1,
+                                   ticklen = 5,
+                                   gridwith = 2)),
+         paper_bgcolor = 'rgb(243, 243, 243)',
+         plot_bgcolor = 'rgb(243, 243, 243)')
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+chart_link = plotly_POST(p, filename="scatter3d/bubble")
+chart_link
+
+
+# 실습-우리의 데이터를 3D로 시각화 해보기
+
+
+
+###### 잘나가는 패키지 찾기
+####### http://awesome42.com/
+
+###
+library(car)
+data(mtcars)
+
+
+mpg
+max(mpg)
+
+min(mpg)
+mean(mpg)
+summary(mpg)
+
+table(cyl)
+barplot(table(cyl))
+
+stem(mpg)
+
+boxplot(mpg)
+
+mpg[cyl==4]
+mean(mpg[cyl==4])
+
+mpg[cyl==6]
+mean(mpg[cyl==6])
+
+
+# X <- c(rep(65, times=5), rep(25, times=5), rep(35, times=10), rep(45, times=4))
+# hist(X, prob=TRUE, col="grey")# prob=TRUE for probabilities not counts
+# lines(density(X), col="blue", lwd=2) # add a density estimate with defaults
+# lines(density(X, adjust=2), lty="dotted", col="darkgreen", lwd=2)
+
+
+
+hist(mpg)
+hist(mpg,breaks=20)
+hist(mpg,breaks=10,col="blue")
+hist(mpg,breaks=10,col="red",xlab="Miles Per Gallon")
+hist(mpg,breaks=10,col="red",xlab="Miles Per Gallon",main="Histogram Of MPG")
+
+
+# density curve
+d <- density(mpg) # returns the density data 
+plot(d)
+plot(d,xlab="Miles Per Gallon",main="Density Of MPG")
+#polygon(d, col="red", border="blue")
+polygon(d, col="blue", border="red")
+
+plot(wt,mpg)
+cor(wt,mpg)
+plot(wt, mpg) 
+abline(lm(mpg~wt))
+lines(lowess(wt,mpg), col="red") # lowess line (x,y)
+title("Regression of MPG on Weight")
+
+plot(mpg, type="o", col="blue")
+
+
+fourcyl<-mpg[cyl==4]
+eightcyl<-mpg[cyl==8]
+
+plot(fourcyl,type="o", col="blue", ylim=c(10,40),ylab="Miles Per Gallon")
+lines(eightcyl,type="o", pch=22, lty=2, col="red")
+title(main="mpg", col.main="red", font.main=4)
+g_range <- range(0, fourcyl, eightcyl)
+legend(1, g_range[2], c("Fourcyl","Eightcyl"), cex=1, 
+       col=c("blue","red"),lty=1:2)
+
+cyltable<-table(cyl)
+cyltable 
+labs<- paste("(",names(cyltable),")", "\n", cyltable, sep="")
+pie(cyltable, labels = labs, col = c("red", "yellow", "blue"),main="PIE CHART OF CYLINDER NUMBERS\n with sample sizes")
+attach(mtcars)
+par(mfrow=c(2,2))
+plot(wt,mpg, main="Scatterplot of wt vs. mpg")
+plot(wt,disp, main="Scatterplot of wt vs disp")
+hist(wt, main="Histogram of wt")
+boxplot(wt, main="Boxplot of wt")
+
+# Add boxplots to a scatterplot
+par(fig=c(0,0.8,0,0.8), new=TRUE)
+plot(mtcars$wt, mtcars$mpg, xlab="Car Weight",
+     ylab="Miles Per Gallon")
+par(fig=c(0,0.8,0.55,1), new=TRUE)
+boxplot(mtcars$wt, horizontal=TRUE, axes=FALSE)
+par(fig=c(0.65,1,0,0.8),new=TRUE)
+boxplot(mtcars$mpg, axes=FALSE)
+mtext("Enhanced Scatterplot", side=3, outer=TRUE, line=-3)
+
+# Basic Scatterplot Matrix
+pairs(~mpg+disp+drat+wt,data=mtcars, 
+      main="Simple Scatterplot Matrix")
+
+# 3D Scatterplot
+library(scatterplot3d)
+attach(mtcars)
+scatterplot3d(wt,disp,mpg, main="3D Scatterplot")
+
+
+library(rgl)
+plot3d(wt, disp, mpg, col="red", size=3)
+
+require(graphics)
+
+pairs(mtcars, main = "mtcars data")
+coplot(mpg ~ disp | as.factor(cyl), data = mtcars,
+       panel = panel.smooth, rows = 1)
+
+# export to excel
+# write.csv(UScereal, "/Users/byounggugkwon/Desktop/untitled/mydata.csv")
+
+# Legend Example
+attach(mtcars)
+boxplot(mpg~cyl, main="Milage by Car Weight",
+        yaxt="n", xlab="Milage", horizontal=TRUE,col=terrain.colors(3))
+legend("topright", inset=.05, title="Number of Cylinders",
+       c("4","6","8"), fill=terrain.colors(3), horiz=TRUE)
+
+
+
+# 선형분석
+# Pratice with data!
+# http://tutorials.iq.harvard.edu/R/Rstatistics/Rstatistics.html#orgheadline7
+# working directory설정하고 그 안의 데이터 사용하기
+
+getwd()
+setwd("/Users/byounggugkwon/Dropbox/Statlecture/24H")
+list.files("dataSets")
+
+states.data <- readRDS("dataSets/states.rds") 
+# read the states data
+states.data <- readRDS("dataSets/states.rds") 
+#get labels
+states.info <- data.frame(attributes(states.data)[c("names", "var.labels")])
+attach(states.data)
+#  [1] "state"   "region"  "pop"     "area"    "density" "metro"   "waste"   "energy"  "miles"   "toxic"   "green"   "house"   "senate" 
+# [14] "csat"    "vsat"    "msat"    "percent" "expense" "income"  "high"    "college"
+# Correlation Graph
+pairs(~csat+vsat+msat,data=states.data, main="Simple Scatterplot Matrix")
+
+library(car)
+scatterplotMatrix(~csat+vsat+msat|region, data=states.data,main="Scatterplot")
+
+# 3D Scatterplot
+library(scatterplot3d)
+scatterplot3d(csat+vsat+msat, main="3D Scatterplot",na.rm=T)
+length(csat)
+length(vsat)
+length(msat)
