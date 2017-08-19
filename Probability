@@ -1,0 +1,41 @@
+# R을 이용한 추첨 시뮬레이션
+# 꽝과 1등을 뽑는 lottery 작성
+lottery <- c("꽝","1등")
+# lottery 내용 확인
+lottery
+
+# lottery의 요소는 두 개지만 R 명령으로
+# '꽝'과 '1등'을 99:1의 비율로 등장하도록
+# 조정할 수 있다.
+sample(lottery, 1, prob = c(99,1))
+# sample은 무작위(랜덤)로 추출하는 함수로
+# 위에서 하나만 추출하고 있다
+
+# 100개 추출하는 경우 replace = TRUE를 추가로 지정하면 된다.
+# 몇 번 추출하든지 99:1 비율으 변하지 않는다.
+sample(lottery, 100, prob = c(99,1), replace = TRUE)
+
+
+#　추첨을 매일 100회, 일주일동안 뽑아서 1등이 나온 횟수를 시뮬레이션
+replicate (7, sample (lottery, 100, prob = c(99,1), replace = TRUE) ) # 100행 7열의 결과가 표시된다
+# replicate 라는 함수는 명령을 지정한 횟수만큼 반복 실행한다
+### 구문: replicate (횟수, 명령)
+
+# １등이 나온 횟수를 센다
+sum ( replicate (7, sample (lottery, 100, prob = c(99,1), replace = TRUE) ) == "1등")
+### 구문  sum (A == "1등"), A 안에 포함된 1등을 세는 명령
+
+
+# 100회 추첨하는 것을 7일 반복해서 1등이 나온 총 횟수를 구한다.
+# 그리고 이 계산을 1000주 반복하는 명령을 작성한다
+# 결과는 res로 저장한다
+res <- replicate(1000, sum(replicate (7, sample (lottery, 100, prob = c(99,1), replace = TRUE) ) == "1등"))
+
+### 구문 　replicate (1000, 합계（replicate (7, 100회 추첨했을 때의 1등이 나온 횟수）)
+
+# 간단한 히스토그램 작성 
+hist(res)
+
+
+
+# Central Limit Theorem
