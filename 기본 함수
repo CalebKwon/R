@@ -59,10 +59,12 @@ tapply(x,f,mean)
 tapply(x,f,mean,simplify=FALSE) # lapply와 같이 결과값 리턴
 tapply(x,f,mean,simpliy=TRUE) #simplify=FRUE는 default
 
+# table
+x=c("Yes","No","No","Yes","Yes")
 library(datasets)
 data("mtcars")
+table(x)
 head(mtcars)
-
 table(mtcars$cyl)
 
 tapply(mtcars$mpg,mtcars$cyl,mean)
