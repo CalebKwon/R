@@ -1,0 +1,135 @@
+# 함수 만들기
+# 1
+my_mean<-function(my_vector){
+  sum(my_vector)/length(my_vector)
+}
+my_mean(c(10,20,30))
+
+
+# 2
+evaluate<-function(func,dat){
+  func(dat)
+}
+
+evaluate(mean,c(3,4,5))
+
+evaluate(function(x){x+1},5)
+
+evaluate(function(x){x[length(x)]},c(3,4,5))
+
+
+# 3
+remainder<-function(num,divisor=2){
+  num%%divisor
+}
+
+remainder(5)
+
+
+
+
+
+# 아래 데이터의 mean과 sd를 찾는 함수를 만들어보자
+# c(370,409,445,399,544,388,400,398,399)
+
+# apply, lapply, tapply
+x<-matrix(rnorm(200),20,10)
+y<-list(a=1:5,b=rnorm(10))
+
+# 리스트 값 조정
+lapply(y,mean) # 리스트에만 적용, ㅣ은 리스트, 결과를 리스트로 제공
+sapply(y,mean) # 리스트에 적용, s는 simplify, 결과를 벡터로 제공
+
+lapply(y,function(y){y+1})
+sapply(y,function(y){y+1}) #길이가 다르기 때문에 합치기가 어려워 lapply값과 같이 나옴
+
+
+# 행렬 값 조정
+apply(x,2,mean) 
+apply(x,2,sd)
+# apply함수의 두번째 인자로 1을 넣으면 행에 대한 함수
+# 2를 넣으면 열에 대한 함수를 적용한다.
+
+tapply
+t<-c(rnorm(10),runif(10),rnorm(10,1))
+f<-gl(3,10) #gl은 factor level 생성
+
+tapply(x,f,mean)
+
+tapply(x,f,mean,simplify=FALSE) # lapply와 같이 결과값 리턴
+tapply(x,f,mean,simpliy=TRUE) #simplify=FRUE는 default
+
+library(datasets)
+data("mtcars")
+head(mtcars)
+
+table(mtcars$cyl)
+
+tapply(mtcars$mpg,mtcars$cyl,mean)
+
+with(mtcars,tapply(mpg,cyl,mean))
+
+
+# nchar()
+x<- c("Seoul", "New York", "London", "1234")
+nchar(x)
+
+# substr
+substr("BigDataAnalysis",1,4)
+substr("19971104",1,4)
+time_stamp <- c("201507251040", "201507251041", "201507251042", "201507251043", "201507251044")
+t_yyyymm <- substr(time_stamp, 1, 6)
+
+# paste
+
+
+paste(x,y)
+paste(x, y, sep="%%")
+
+
+words<-c("The","quick","brown","FOX","jumps","over","the","lazy","DOG")
+paste(words, collapse="_")
+
+paste(LETTERS[1:5], 1:5, sep="_", collapse="---")
+
+
+paste("I", "Love", "New York", sep = "")
+paste("I", "Love", "New York", sep = " ")
+paste("I", "Love", "New York", sep = "_")
+
+
+# split
+name <- c("Chulsu, Kim", "Younghei, Lee", "Dongho, Choi")
+name_split <- strsplit(name, split=",")
+name_split
+
+# sub : 문자형 벡터 x에서 처음 나오는 old 문자를 new 문자로 한번만 바꾸기
+z <- c("My name is Chulsu. What's your name?")
+sub("name", "first name", z)
+
+# gsub : gsub()는 모든 old 문자를 new 문자로 바꿈, Pattern Matching and Replacement
+# http://lightblog.tistory.com/15
+gsub("name", "first name", z)
+
+data<-c("12.57869486" ,"12.57869582" ,"12.57870155")
+a<-gsub(".", " ", data, fixed=TRUE)
+a
+
+
+# 문자열 벡터에서 특정 부분 문자열 패턴 찾기
+grep("1010", c("1001", "1010", "1110", "101000"))
+grep("1010", c("1001", "1009", "1110", "100000"))
+
+data <- data.frame(values=c(91, 92, 108, 104, 87, 91, 91, 97, 81, 98), 
+                   names = c("fee-", "fi", "fo-", "fum-", "foo-", "foo1234-", "123foo-", 
+                             "fum-", "fum-", "fum-"))
+
+data$values[grep("foo",data$names)]
+
+
+
+# regexpr() : text 내에서 패턴이 가장 먼저 나오는 위치 찾기
+regexpr("NY", "I love NY and I'm from NY")
+
+# gregexpr() : text 내에서 패턴이 나오는 모든 위치를 찾기
+gregexpr("NY", "I love NY and I'm from NY")
