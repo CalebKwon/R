@@ -1,3 +1,46 @@
+#  Matrix 선언하기
+# matrix( data, nrow, ncol, byrow = FALSE)
+
+# data: 행렬에 들어가는 데이터
+# nrow: row(행)의 수
+# ncol: column(열)의 수
+# byrow: 기본적으로 열(column)을 기준으로 숫자가 들어감 (FALSE)
+           TRUE로 지정할 시 행(row) 기준으로 숫자가 들어간다.
+
+ mat = matrix(1:20, nrow=5, ncol=4)
+ mat
+
+# 행열 요소 추출, 치환
+
+mat[1,1]
+
+mat[, 2] # 빈칸이면 해당 인덱스의 모든인자 추출
+
+mat[ c(3,4), ] # 벡터를 이용하여 여러 데이터 동시 추출 가능
+ 
+
+mat [1,1] = 99 # Matrix의 치환
+mat
+
+mat[5,] <- c(55,66,77,88) # 벡터를 이용하여 치환
+mat
+
+sum(mat) # 메트릭스에 함수 적용 가능
+
+
+
+apply(mat,1, sum) # mat matrix의 row별 합 구하기
+apply(mat, 2, sd) # mat matrix의 column별 표준편차 구하기
+# margin: 1 (row), 2(column)
+
+mat = matrix(1:20, ncol=4, nrow=5)
+mat
+
+apply(mat, 1, sum)
+
+apply(mat, 2, sd)
+
+
 # 함수 만들기
 # 1
 my_mean<-function(my_vector){
