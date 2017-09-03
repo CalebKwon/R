@@ -130,4 +130,4 @@ aes(x = payment, fill = log_month)) + geom_histogram(position = "dodge", binwidt
 
 
 
-출처: http://dataanalytics.tistory.com/67 [게임 데이터 통계 분석]
+
