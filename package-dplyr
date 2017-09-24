@@ -86,14 +86,6 @@ flights %>%
   summarise_each(funs(min(., na.rm=TRUE), max(., na.rm=TRUE)), matches("Delay"))
 
 
-
-# for each day of the year, count the total number of flights and sort in descending order
-
-# rewrite more simply with the `tally` function
-flights %>%
-  group_by(Month, DayofMonth) %>%
-  tally(sort = TRUE)
-
 # for each destination, show the number of cancelled and not cancelled flights
 flights %>%
   group_by(Dest) %>%
