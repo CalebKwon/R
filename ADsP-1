@@ -87,7 +87,7 @@ y = c(2,3,5,7,11,13)
 #	7.	sum(x<7 & x> 3) # read | as 'or', & and 'and'
 #	8.	y[3]
 #	9.	y[-3]
-#	10. y[x] (What is NA?)
+#	10. y[c(2,3,10)] (What is NA?)
 #	11.	y[y>=7]
 
 y<-c(1,2,3,4,5,6,7,8,9,10)
@@ -100,32 +100,27 @@ getwd()
 setwd("yourpath")
 
 # data 불러오기
+# load medical data
 data<-read.csv(file.choose())
 data<-read.csv("filename",header =TRUE)
 data<-read.csv("yourpath",header =TRUE)
 
 # 데이터의 구조 보여주기
 str(data) 
+dim(data)
+# 데이터 요약
+summary(data)
 
 # rbind & cbind
-data(iris)
-iris
-
-dim(iris)
-
-colnames(iris)
-rownames(iris)
-names(iris)
-head(iris)
+#
+data1<-data[1:75,]
+data2<-data[76:150,]
+r<-rbind(data1,data2)
 
 #
-iris1<-iris[1:75,]
-iris2<-iris[76:150,]
-r<-rbind(iris1,iris2)
-#
-iris1<-iris[,1:3]
-iris2<-iris[,4:5]
-c<-cbind()
+data1<-data[,1:3]
+data2<-data[,4:5]
+c<-cbind(data1,data2)
 
 # iris1 : save as csv
 # iris2 : save as csv
@@ -138,19 +133,26 @@ df1 = data.frame(CustomerId = c(1:6), Product = c(rep("Toaster", 3), rep("Radio"
 df2 = data.frame(CustomerId = c(2, 4, 6), State = c(rep("Alabama", 2), rep("Ohio", 1)))
 
 # merge two data frames by ID
-total <- merge(data frameA,data frameB,by="ID")
-# merge two data frames by ID and Country
-total <- merge(data frameA,data frameB,by=c("ID","Country"))
+total <- merge(data frameA,data frameB,by="CustomerId")
 
-# 데이터 요약
-summary(data)
+# merge two data frames by ID and Country
+total <- merge(data frameA,data frameB,by=c("CustomerId"))
+
 
 # iris data 정렬하기
-newdata<-iris[order(iris$@@@),]
-# newdata<-iris[-order(iris$@@@),]
+newdata<-data[order(data$@@@),]
+# newdata<-data[order(-data$@@@),]
+
+# sort by %%% and &&&
+newdata <- data[order(data$%%%, data$&&&),]
+
+#sort by %%% (ascending) and &&& (descending)
+newdata <- data[order(data$%%%, -data$&&&),] 
+
+
 
 # ex : 정렬한 데이터를 반으로 나누어 csv file로 저장하기
-# write.csv(mydata,"")y each variable
+# write.csv(mydata,"")
 
 
 ######## more advanced data manipulation########
@@ -160,7 +162,9 @@ head(UScereal)
 UScereal
 dim(UScereal)
 names(UScereal)
-attach(UScereal)
+str(UScereal)
+summary(UScereal)
+# attach(UScereal)
 # detach(UScereal)
 
 ##########################################
@@ -178,23 +182,17 @@ attach(UScereal)
 # potassium=grams of potassium
 # vitamins=vitamins and minerals(none, enriched, or 100%)
 
-names(UScereal)
-# 관심있는 변수 6개를 택해보자. 자신을 식품 관련 연구원(국민에게 건강한 식품을 제안해야 하는)
-# ex : 1) 6개의 변수 오름/ 내림으로 정렬해보자. 2) 각각의 정리된 데이터셋을 지정한 폴더에 저장해보기
-
-
 UScerealCPrS<-UScereal[,c(2,3,5,8)]
-
-
 plot(UScerealCPrS)
-head(UScerealCPrS)
+cor(UScereal)
 
-UScerealonetoten<-UScereal[1:20,]
+# box plot and scatter plot together
+# http://www.win-vector.com/blog/2015/06/wanted-a-perfect-scatterplot-with-marginals/
+
 UScerealonetofour<-UScereal["Wheaties",1:4]
 UScerealmfrG<-UScereal[UScereal$mfr=="G",]
 UScerealmfrG.1<-UScereal[UScereal$mfr=="G",c(1,3,7)]
 UScerealmfrGKP<-UScereal[UScereal$mfr%in%c("G","K","P"),]
-UScereal[mfr=="G"& sugars>15,]
 
 UScerealGHsugar<-UScereal[with(UScereal, mfr=="G"& sugars>mean(sugars)),]
 UScereal[with(UScereal, mfr=="P"& calories>mean(calories)),]
@@ -212,9 +210,44 @@ UScereal$sugars1[UScereal$sugars>=mean(UScereal$sugars)]="high"
 UScereal$sugars1[UScereal$sugars<mean(UScereal$sugars)]="low"
 UScereal$sugars1
 counts<-UScereal$sugars1
-barplot(counts, main="sugars Distribution", xlab="Amount of Suagrs")
 
-# ex : 4개의 연속 변수를 명목 변수로 바꾸고 1)테이블로 정리, 2)bar plot으로 시각화
+barplot(table(counts), main="sugars Distribution", xlab="Amount of Suagrs")
+boxplot(sugars~sugars1,data=UScereal, main="",xlab="", ylab="")
+
+
+# advanced barplot and boxplot
+# Simple Horizontal Bar Plot with Added Labels 
+counts <- table(mtcars$gear)
+barplot(counts, main="Car Distribution", horiz=TRUE,
+  names.arg=c("3 Gears", "4 Gears", "5 Gears"))    
+
+# Stacked Bar Plot with Colors and Legend
+counts <- table(mtcars$vs, mtcars$gear)
+barplot(counts, main="Car Distribution by Gears and VS",
+  xlab="Number of Gears", col=c("darkblue","red"),
+ 	legend = rownames(counts))
+  
+# Grouped Bar Plot
+counts <- table(mtcars$vs, mtcars$gear)
+barplot(counts, main="Car Distribution by Gears and VS",
+  xlab="Number of Gears", col=c("darkblue","red"),
+ 	legend = rownames(counts), beside=TRUE)
+#install.packsges(ggplot2)
+#library(ggplot2) 
+#data(diamonds)
+#diamonds$price1[diamonds$price<500]="low"
+#diamonds$price1[diamonds$price>=500&diamonds$price<2000]="middle"
+#diamonds$price1[diamonds$price>=2000&diamonds$price<5000]="high"
+#diamonds$price1[diamonds$price>=5000]="very high"
+# table(diamonds$price1)
+# boxplot(carat~price1, outline=FALSE, data=diamonds)
+
+# 이름 순서대로 바꾸려면 한 가지 명령어가 더 들어가야 합니다. 
+diamonds$price1=factor(diamonds$price1, levels=c("low","middle","high","very high"))
+boxplot(carat~price1, outline=FALSE, data=diamonds)
+ 
+ 
+# ex : 4개의 연속 변수를 명목 변수로 바꾸고 1)테이블로 정리, 2)bar plot/box plot 으로 시각화
 # medicaldata 적용해보기
 # BMI
 # age
@@ -231,24 +264,23 @@ mean(calories)
 min(calories)
 max(calories)
 summary(calories)
-hist(calories)$counts
 
+# 2) protein
+# 3) sugars
+# 4) fibre
+
+# histogram
+hist(calories)
+hist(calories)$counts
 hist(calories,breaks=30, main="Calories",col="red")
 # http://stackoverflow.com/questions/9317948/how-to-label-histogram-bars-with-data-values-or-percents-in-r
-help(hist)
 
-# 2)
-
-# 3)
-
-# 4)
 
 ########## 여러개의 그래프를 한 페이지에#############
 par(mfrow=c(1,3))
 hist(calories,breaks=30,, main="Calories",col="red")
 hist(fat,breaks=30, main="Fat",col="red")
 hist(sugars,breaks=30, main="Sugars",col="red")
-
 
 ############ sugars, fat, and calories를 전체 평균보다 중간 이하 포함한 제품을 찾아라.
 # Condition
@@ -265,14 +297,11 @@ sugHcalHfatH<-subset(sugHcalH,sugHcalH$fat>mean(sugHcalH$fat))
 summary(sugLcalLfatL)
 summary(sugHcalHfatH)
 
-
 # 비교
 summary(sugLcalLfatL)
 summary(sugHcalHfatH)
 
-
 # 
-
 plot(calories,fat)
 text(calories,fat,labels=row.names(UScereal),pos=4, cex=0.6, col="blue")
 
@@ -337,86 +366,6 @@ plot(sugars,fat,main="Nutrition",xlab="Sugars", ylab="Fat", pch=21, bg=c("red","
 pairs(~calories+fat+sugars,data=UScereal, main="Simple Scatterplot Matrix")
 plot(~calories+fat+sugars,data=UScereal, main="Simple Scatterplot Matrix")
 
-# practice more with different data
-
-data("mtcars")
-
-# Simple Bar Plot 
-counts <- table(mtcars$gear)
-barplot(counts, main="Car Distribution", 
-  	xlab="Number of Gears")
-    
-# Simple Horizontal Bar Plot with Added Labels 
-counts <- table(mtcars$gear)
-barplot(counts, main="Car Distribution", horiz=TRUE,
-  names.arg=c("3 Gears", "4 Gears", "5 Gears"))    
-
-# Stacked Bar Plot with Colors and Legend
-counts <- table(mtcars$vs, mtcars$gear)
-barplot(counts, main="Car Distribution by Gears and VS",
-  xlab="Number of Gears", col=c("darkblue","red"),
- 	legend = rownames(counts))
-  
-# Grouped Bar Plot
-counts <- table(mtcars$vs, mtcars$gear)
-barplot(counts, main="Car Distribution by Gears and VS",
-  xlab="Number of Gears", col=c("darkblue","red"),
- 	legend = rownames(counts), beside=TRUE)
-
-# Simple Histogram
-hist(mtcars$mpg)
-
-# Colored Histogram with Different Number of Bins
-hist(mtcars$mpg, breaks=12, col="red")
-
-# Add a Normal Curve (Thanks to Peter Dalgaard)
-x <- mtcars$mpg 
-h<-hist(x, breaks=10, col="red", xlab="Miles Per Gallon", 
-  	main="Histogram with Normal Curve") 
-xfit<-seq(min(x),max(x),length=40) 
-yfit<-dnorm(xfit,mean=mean(x),sd=sd(x)) 
-yfit <- yfit*diff(h$mids[1:2])*length(x) 
-lines(xfit, yfit, col="blue", lwd=2)
-
-# Kernel Density Plot
-d <- density(mtcars$mpg) # returns the density data 
-plot(d) # plots the results
-
-# Compare MPG distributions for cars with 
-# 4,6, or 8 cylinders
-install.packages("sm")
-library(sm)
-attach(mtcars)
-
-# create value labels 
-cyl.f <- factor(cyl, levels= c(4,6,8),
-  labels = c("4 cylinder", "6 cylinder", "8 cylinder")) 
-
-# plot densities 
-sm.density.compare(mpg, cyl, xlab="Miles Per Gallon")
-title(main="MPG Distribution by Car Cylinders")
-
-# add legend via mouse click
-colfill<-c(2:(2+length(levels(cyl.f)))) 
-legend(locator(1), levels(cyl.f), fill=colfill)
-
-# package installation
-# box plot, table, bar plot
-install.packages("ggplot2")
-library("ggplot2")
-data(diamonds)
-
-diamonds$price1[diamonds$price<500]="low"
-diamonds$price1[diamonds$price>=500&diamonds$price<2000]="middle"
-diamonds$price1[diamonds$price>=2000&diamonds$price<5000]="high"
-diamonds$price1[diamonds$price>=5000]="very high"
-
-table(diamonds$price1)
-boxplot(carat~price1, outline=FALSE, data=diamonds)
-
-# 이름 순서대로 바꾸려면 한 가지 명령어가 더 들어가야 합니다. 
-diamonds$price1=factor(diamonds$price1, levels=c("low","middle","high","very high"))
-boxplot(carat~price1, outline=FALSE, data=diamonds)
 
 # R 결측값 확인 및 처리: is.na(), sum(is.na()), na.rm=TRUE, na.omit(), complete.cases()
 
@@ -463,20 +412,17 @@ str(Cars93)
 # dataset[is.na(dataset)] <- 0
 
 
-# R- Basic Graphic
-# scatterplot
-hsb2 <- read.table('http://www.ats.ucla.edu/stat/r/modules/hsb2.csv', header=T, sep=",")
 
-hsb2$race
-
-attach(hsb2)
-race
+# Practice - 데이터 분석 로직(산점도, 군집 나누기, 그룹별 트랜드)
+hsb2 <- read.table('https://stats.idre.ucla.edu/wp-content/uploads/2016/02/hsb2-2.csv', header=T, sep=",")
+dim()
+summary()
+head()
+attach()
 
 # 산점도
 plot(read, write)
 cor(read, write)
-
-# practice more!
 
 # line
 plot(math, write)
@@ -489,8 +435,6 @@ abline(fit)
 
 # pch for plotting characters, or symbol to use
 # see help(points) for more information on pch
-
-hsb2
 
 hsb2_female<-hsb2[female==1,]
 hsb2_male<-hsb2[female==0,]
@@ -524,7 +468,7 @@ with(hsb2_r3, points(math, write, pch=20, col="green"))
 with(hsb2_r4, points(math, write, pch=20, col="pink"))
 
 
-# ses 별로 점을 찍어 봅시다.
+# ses 별로 색깔을 달리하여 점을 찍어 봅시다.
 
 
 
@@ -541,25 +485,17 @@ legend(65, 35, c("female", "male"), pch=c(20, 22),
        cex=.8, col=c("darkred", "darkblue"))
 
 
-# male vs female
-math_male<-hsb2$math[female==0]
-write_male<-hsb2$write[female==0]
-math_female<-hsb2$math[female==1]
-write_female<-hsb2$write[female==1]
-plot(math_female, write_female, type="p", pch=20,
-     col="darkred", ylim=c(25, 70))
-points(math_male, write_male, pch=22, col="darkblue")
-abline(lsfit(write_female, math_female), col="darkred")
-abline(lsfit(write_male, math_male), col="darkblue")
+# adding abline
+hsb2_female<-hsb2[female==1,]
+hsb2_male<-hsb2[female==0,]
+with(hsb2_female, plot(math, write, pch=20, 
+                       col="darkred", ylim=c(25, 70)))
+with(hsb2_male, points(math, write, pch=22, 
+                       col="darkblue"))
+with(hsb2_female,abline(lsfit(write, math), col="darkred"))
+with(hsb2_male,abline(lsfit(write, math), col="darkblue"))
 legend(65, 35, c("female", "male"), pch=c(20, 22), 
        cex=.8, col=c("darkred", "darkblue"))
-
-
-# add title and axis name
-# plot(faithful,
-#       main = "Eruptions of Old Faithful",
-#       xlab = "Eruption time (min)",
-#       ylab = "Waiting time to next eruption (min)")
 
 
 
@@ -572,36 +508,6 @@ with(hsb2_r1, plot(math, write, pch=20, col="darkred"))
 with(hsb2_r2, points(math, write, pch=20, col="darkblue"))
 with(hsb2_r3, points(math, write, pch=20, col="green"))
 with(hsb2_r4, points(math, write, pch=20, col="pink"))
-
-
-# boxplot
-data<-data.frame(Stat11=rnorm(100,mean=3,sd=2),
-                 Stat21=rnorm(100,mean=4,sd=1),
-                 Stat31=rnorm(100,mean=6,sd=0.5),
-                 Stat41=rnorm(100,mean=10,sd=0.5),
-                 Stat12=rnorm(100,mean=4,sd=2),
-                 Stat22=rnorm(100,mean=4.5,sd=2),
-                 Stat32=rnorm(100,mean=7,sd=0.5),
-                 Stat42=rnorm(100,mean=8,sd=3),
-                 Stat13=rnorm(100,mean=6,sd=0.5),
-                 Stat23=rnorm(100,mean=5,sd=3),
-                 Stat33=rnorm(100,mean=8,sd=0.2),
-                 Stat43=rnorm(100,mean=4,sd=4))
-# Basic
-boxplot(data)
-
-# arrange variable names vertically
-boxplot(data, las = 2)
-
-# 
-boxplot(data, las = 2, names = c(“Station 1”,“Station 2”,“Station 3”,“Station 4”,“Station 1”,“Station 2”,“Station 3”,“Station 4”,“Station 1”,“Station 2”,“Station 3”,“Station 4”))
-
-# title
-boxplot(data, ylab =“Oxigen (%)”, xlab =“Time”,las = 2, names = c(“Station 1”,“Station 2”,“Station 3”,“Station 4”,“Station 1”,“Station 2”,“Station 3”,“Station 4”,“Station 1”,“Station 2”,“Station 3”,“Station 4”))
-
-
-hsb2 <- read.table('http://www.ats.ucla.edu/stat/r/modules/hsb2.csv', header=T, sep=",")
-attach(hsb2)
 
 
 # 성적별로 범주형 데이터로 나누기  
@@ -661,70 +567,6 @@ text(uh$mids, uh$counts+2, label=c(uh$counts))
 
 # 누적분포함수 값 p에 해당하는 분위수 q 를 알고 싶을 때
 qnorm(p=0.8413447, mean=0, sd=1)
-
-# Play with data set
-install.packages("car")
-library(car)
-data(mtcars)
-newdata<-mtcars[,c(1,3,4,5,6)]
-plot(newdata)
-cor(newdata)
-class(mtcars$vs)
-dim(mtcars)
-head(mtcars)
-attributes(mtcars)
-names(mtcars)
-rownames(mtcars)
-
-mtcars$gear
-attach(mtcars)
-gear
-mtcars["Fiat 128",]
-
-# am 오토메틱, 메뉴얼
-mtcars$am<-as.factor(mtcars$am)
-mtcars$vs<-as.factor(mtcars$vs)
-summary(mtcars)
-
-# 조건을 둔 추출
-mtcars[which.max(mtcars$mpg),]
-mtcars[which.min(mtcars$wt),]
-
-# 데이터 정리
-aggregate(mpg~gear, data=mtcars, FUN="mean")
-aggregate(mpg~gear, data=mtcars, FUN="sd")
-
-# more information
-# http://dwoll.de/rexrepos/index.html
-
-# 산점도 Plot
-help(pairs)
-help(plot)
-plot(mtcars)
-attach(mtcars)
-
-plot(hp~mpg)
-plot(cyl~mpg)
-
-# pie chart
-table(mtcars$am)
-auto=mtcars$am
-matic=table(auto)
-pie(matic)
-auto=mtcars$gear
-matic=table(auto)
-pie(matic)
-
-library(car)
-scatterplot.matrix(~calories+fat+sugars|mfr, data=UScereal,main="Scatterplot")
-
-mtcars[grep("Merc", rownames(mtcars)), ]
-
-# sort by mpg and cyl
-newdata <- mtcars[order(mpg, cyl),]
-
-#sort by mpg (ascending) and cyl (descending)
-newdata <- mtcars[order(mpg, -cyl),] 
 
 
 # 3D Scatterplot
@@ -798,47 +640,6 @@ plot(d)
 plot(d,xlab="Miles Per Gallon",main="Density Of MPG")
 #polygon(d, col="red", border="blue")
 polygon(d, col="blue", border="red")
-
-plot(wt,mpg)
-cor(wt,mpg)
-plot(wt, mpg) 
-abline(lm(mpg~wt))
-lines(lowess(wt,mpg), col="red") # lowess line (x,y)
-title("Regression of MPG on Weight")
-
-plot(mpg, type="o", col="blue")
-
-
-fourcyl<-mpg[cyl==4]
-eightcyl<-mpg[cyl==8]
-
-plot(fourcyl,type="o", col="blue", ylim=c(10,40),ylab="Miles Per Gallon")
-lines(eightcyl,type="o", pch=22, lty=2, col="red")
-title(main="mpg", col.main="red", font.main=4)
-g_range <- range(0, fourcyl, eightcyl)
-legend(1, g_range[2], c("Fourcyl","Eightcyl"), cex=1, 
-       col=c("blue","red"),lty=1:2)
-
-cyltable<-table(cyl)
-cyltable
-labs<- paste("(",names(cyltable),")", "\n", cyltable, sep="")
-pie(cyltable, labels = labs, col = c("red", "yellow", "blue"),main="PIE CHART OF CYLINDER NUMBERS\n with sample sizes")
-attach(mtcars)
-par(mfrow=c(2,2))
-plot(wt,mpg, main="Scatterplot of wt vs. mpg")
-plot(wt,disp, main="Scatterplot of wt vs disp")
-hist(wt, main="Histogram of wt")
-boxplot(wt, main="Boxplot of wt")
-
-# Add boxplots to a scatterplot
-par(fig=c(0,0.8,0,0.8), new=TRUE)
-plot(mtcars$wt, mtcars$mpg, xlab="Car Weight",
-     ylab="Miles Per Gallon")
-par(fig=c(0,0.8,0.55,1), new=TRUE)
-boxplot(mtcars$wt, horizontal=TRUE, axes=FALSE)
-par(fig=c(0.65,1,0,0.8),new=TRUE)
-boxplot(mtcars$mpg, axes=FALSE)
-mtext("Enhanced Scatterplot", side=3, outer=TRUE, line=-3)
 
 # Next Step
 # dplyr
