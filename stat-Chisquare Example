@@ -2,3 +2,53 @@
 # https://www.r-bloggers.com/chi-squared-test/
 # http://bhpark.tistory.com/53
 # http://blog.daum.net/_blog/BlogTypeView.do?blogid=09slZ&articleno=16495315
+
+
+  library(MASS)       # load the MASS package 
+  tbl = table(survey$Smoke, survey$Exer) 
+  tbl                 # the contingency table 
+ 
+#        Freq None Some 
+#  Heavy    7    1    3 
+#  Never   87   18   84 
+#  Occas   12    3    4 
+#  Regul    9    1    7
+
+
+chisq.test(tbl) 
+ 
+#        Pearson’s Chi-squared test 
+ 
+# data:  table(survey$Smoke, survey$Exer) 
+# X-squared = 5.4885, df = 6, p-value = 0.4828 
+
+# Smoke Vs. Sex
+# Sex Vs. Exer
+
+# 연속 변수를 명목 변수로 구하는 방법 기억 하시나요?
+
+# Medical Data
+BMI Vs. Chol
+Age Vs. BMI
+
+# hsb2
+gender Vs. Math
+gender Vs. read
+race 1,2 vs. Math
+ses 1,2 vs. Math
+
+
+# Practice with data set
+# From plotting to analysis
+# medical data에서 age1 변수를 설정 이용 1) age>=mean(age)는 "highage",age<mean(age)는 "lowage"로 나눈다
+#                                    2) BMI 와 Chol을 plotting 하고 high age==blue color, low age==red color로 각 점에 색깔을 칠한다.  
+#                                    3) legend 덧붙이기
+#                                    4) 각 age에 맞게 추세선 그리기
+#                                    5) main, x축, y축 이름 넣기
+#                                    6) high age그룹과 low age 그룹의 BMI와 chol summary구하기, 두 그룹간 BMI와 chol의 평균이 같은지 구하기(t-test)
+#                                    7) high age그룹과 low age 그룹의 BMI와 chol 막대 그래프로 구하기 
+#                                    8) high age그룹과 low age 그룹의 BMI, 그리고 chol간의 관계 연관성 구하기.(BMI도 두 구간으로 chol도 두 구간으로 나눔)
+
+
+
+
