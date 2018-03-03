@@ -31,5 +31,14 @@ city.names <- c("Adelaide", "Alice Springs", "Brisbane", "Darwin", "Hobart",
     "Melbourne", "Perth", "Sydney")
 text(x, y, pos = 4, labels = city.names)
 
+#  practice
+#  아래 데이터에 MDS를 적용하여 그래프를 그리고 저장하세요.
 
-# practice with hsb2 data
+#  hsb2 data : labels=SES, Female
+#  iris data : labels=class   
+#  medical data : labels= age1(age를 3등급으로 나눠서,young,mid,old)
+#  mtcars : label 
+#  UScereal : label = mfr or # 이전에 그렸던 scatter plot과 어떤 차이점이 있을까?
+# 리스트에서 원하는 데이터 셋을 하나 찾아서 MDS분석을 하세요.
+# https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/00Index.html
+# 예 ) state.x77 : 미국의 주별 환경
