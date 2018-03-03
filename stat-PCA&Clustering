@@ -74,46 +74,16 @@ biplot(pc,cex = c(0.7, 0.8))
 # 관측치별 이름 매핑(rownames mapping)
 # text(iris_pc1, iris_pc2, labels = iris$Species, cex = 0.7, pos = 3, col = "blue")
 
-# 세번째 예제
-# library(car)
-data(mtcar) 
 
-# library(MASS)
-data(UScereal)
-
-# http://factominer.free.fr/classical-methods/principal-components-analysis.html
-install.packages("FactoMineR")
-library(FactoMineR)
-data(decathlon)
-str(decathlon)
-
-res.pca = PCA(decathlon[,1:10], scale.unit=TRUE, ncp=5, graph=T)
-#decathlon: the data set used
-#scale.unit: to choose whether to scale the data or not 
-#ncp: number of dimensions kept in the result
-#graph: to choose whether to plot the graphs or not
-
-
-res.pca = PCA(decathlon[,1:12], scale.unit=TRUE, ncp=5, quanti.sup=c(11: 12), graph=T)
-#decathlon: the data set used
-#scale.unit: to choose whether to scale the datas or not
-#ncp: number of dimensions kept in the result
-#quanti.sup: vector of the indexes of the quantitative supplementary variables
-#graph: to choose whether to plot the graphs or not
-
-res.pca = PCA(decathlon, scale.unit=TRUE, ncp=5, quanti.sup=c(11: 12), quali.sup=13, graph=T)
-#decathlon: the data set used
-#scale.unit: to choose whether to scale the datas or not
-#ncp: number of dimensions kept in the result
-#quanti.sup: vector of the indexes of the quantitative supplementary variables
-#quali.sup: vector of the indexes of the qualitative supplementary variables
-#graph: to choose whether to plot the graphs or not
-
-plot.PCA(res.pca, axes=c(1, 2), choix="ind", habillage=13)
-#res.pca: the result of a PCA
-#axes: the axes to plot
-#choix: the graph to plot ("ind" for the individuals, "var" for the variables)
-#habillage: to choose the colours of the individuals: no colour ("none"), a colour for each individual ("ind") or to colour the individuals according to a categorical variable (give the number of the qualitative variable)
+#  세번째 예제
+#  hsb2 data : labels=SES, Female
+#  iris data : labels=class   
+#  medical data : labels= age1(age를 3등급으로 나눠서,young,mid,old)
+#  mtcars : label 
+#  UScereal : label = mfr or # 이전에 그렸던 scatter plot과 어떤 차이점이 있을까?
+#  리스트에서 원하는 데이터 셋을 하나 찾아서 MDS분석을 하세요.
+#  https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/00Index.html
+#  예 ) state.x77 : 미국의 주별 환경
 
 
 # http://rpubs.com/sinhrks/plot_pca
@@ -123,7 +93,6 @@ install.packages('ggfortify')
 library(ggfortify)
 df <- iris[c(1, 2, 3, 4)]
 autoplot(prcomp(df))
-
 autoplot(prcomp(df), data = iris, colour = 'Species')
 
 # Label = TRUE draws each data label using rownames
@@ -163,6 +132,9 @@ data(wine, package='rattle')
 head(wine)
 wine[-1]
 
+# wine data set
+# https://onlinecourses.science.psu.edu/stat857/node/223
+
 wine.stand <- scale(wine[-1])  # To standarize the variables
 k.means.fit <- kmeans(wine.stand, 3)
 
@@ -188,7 +160,9 @@ clusplot(wine.stand, k.means.fit$cluster, main='2D representation of the Cluster
          color=TRUE, shade=TRUE,
          labels=2, lines=0)
 
+
 Hierarchical clustering:
+# wine data
 d <- dist(wine.stand, method = "euclidean") # Euclidean distance matrix.
 H.fit <- hclust(d, method="ward") # Ward’s minimum variance criterion minimizes the total within-cluster variance
 plot(H.fit) # display dendogram
@@ -196,6 +170,17 @@ groups <- cutree(H.fit, k=3) # cut tree into 5 clusters
 # draw dendogram with red borders around the 5 clusters
 rect.hclust(H.fit, k=3, border="red")
 
+# USarrests data
+df <- USArrests
+df <- na.omit(df)
+# Dissimilarity matrix
+d <- dist(df, method = "euclidean")
+
+# Hierarchical clustering using Complete Linkage
+hc1 <- hclust(d, method = "complete" )
+
+# Plot the obtained dendrogram
+plot(hc1, cex = 0.6, hang = -1)
 
 
 # European protein consumption
@@ -232,53 +217,3 @@ rect.hclust(foodagg, k=4, border="red")
 # 8) REGION: customersâ€™ Region â€“ Lisnon, Oporto or Other (Nominal) 
 
 
-# PCA and Clustering practice
-
-#
-library(ggplot2)
-data(diamonds)
-
-#
-data <-read.csv("/Users/byounggugkwon/Dropbox/Statlecture/24h/data/Wholesalecustomers.csv",header=T)
-summary(data)
-
-#top.n.custs <- function (data,cols,n=5) { #Requires some data frame and the top N to remove
-#idx.to.remove <-integer(0) #Initialize a vector to hold customers being removed
-#for (c in cols){ # For every column in the data we passed to this function
-#col.order <-order(data[,c],decreasing=T) #Sort column "c" in descending order (bigger on top)
-#Order returns the sorted index (e.g. row 15, 3, 7, 1, ...) rather than the actual valuessorted.
-#idx <-head(col.order, n) #Take the first n of the sorted column C to
-#idx.to.remove <-union(idx.to.remove,idx) #Combine and de-duplicate the row ids that need to be #removed
-#}
-#return(idx.to.remove) #Return the indexes of customers to be removed
-#}
-#top.custs <-top.n.custs(data,cols=3:8,n=5)
-#length(top.custs) #How Many Customers to be Removed?
-#data[top.custs,] #Examine the customers
-#data.rm.top<-data[-c(top.custs),] #Remove the Customers
-
-#set.seed(76964057) #Set the seed for reproducibility
-#k <-kmeans(data.rm.top[,-c(1,2)], centers=5) #Create 5 clusters, Remove columns 1 and 2
-#k$centers #Display&nbsp;cluster centers
-#table(k$cluster)
-
-# rng<-2:20 #K from 2 to 20
-# tries <-100 #Run the K Means algorithm 100 times
-#avg.totw.ss <-integer(length(rng)) #Set up an empty vector to hold all of points
-#for(v in rng){ # For each value of the range variable
-# v.totw.ss <-integer(tries) #Set up an empty vector to hold the 100 tries
-# for(i in 1:tries){
-# k.temp <-kmeans(data.rm.top,centers=v) #Run kmeans
-# v.totw.ss[i] <-k.temp$tot.withinss#Store the total withinss
-# }
-# avg.totw.ss[v-1] <-mean(v.totw.ss) #Average the 100 total withinss
-#}
-#plot(rng,avg.totw.ss,type="b", main="Total Within SS by Various K",
-# ylab="Average Total Within Sum of Squares",
-# xlab="Value of K")
-
-
-# R을 사용한 K-means 군집분석 (K-means clustering in R)
-# http://www.sthda.com/english/wiki/cluster-analysis-in-r-unsupervised-machine-learning
-# http://cc.oulu.fi/~jarioksa/opetus/metodi/sessio3.pdf
-# https://eight2late.wordpress.com/2015/07/22/a-gentle-introduction-to-cluster-analysis-using-r/
